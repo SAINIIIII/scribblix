@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+
 <meta
     name="viewport"
     content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"
@@ -9,8 +10,11 @@
 
 <title>Scribblix</title>
 
+<!-- CrazyGames SDK -->
 <script src="https://sdk.crazygames.com/crazygames-sdk-v3.js"></script>
-<script src="/socket.io/socket.io.js"></script>
+
+<!-- Socket.IO CLIENT -->
+<script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
 
 <style>
 *{
@@ -781,6 +785,7 @@ button{
 /* RESPONSIVE */
 
 @media(max-width:1050px){
+
     .game-shell{
         grid-template-columns:190px minmax(0,1fr) 250px;
     }
@@ -798,6 +803,7 @@ button{
 }
 
 @media(max-width:800px){
+
     .game{
         padding:8px;
     }
@@ -839,6 +845,7 @@ button{
 }
 
 @media(max-width:560px){
+
     .home{
         padding:10px;
     }
@@ -974,31 +981,45 @@ button{
 <div class="join-card">
 
     <h3>Ready to play?</h3>
+
     <div class="sub">
         Your CrazyGames name will be used when available.
     </div>
 
     <div class="field">
+
         <label>PLAYER NAME</label>
+
         <input
             id="name"
             maxlength="18"
             placeholder="Your name"
             autocomplete="off"
         >
+
     </div>
 
-    <button id="quickJoin" class="primary quick">
+    <button
+        id="quickJoin"
+        class="primary quick"
+    >
         QUICK JOIN
     </button>
 
     <div class="divider">OR</div>
 
-    <button id="createRoom" class="primary">
+    <button
+        id="createRoom"
+        class="primary"
+    >
         CREATE ROOM
     </button>
 
-    <div class="join-row" style="margin-top:10px;">
+    <div
+        class="join-row"
+        style="margin-top:10px;"
+    >
+
         <input
             id="roomCode"
             maxlength="5"
@@ -1013,14 +1034,19 @@ button{
             "
         >
 
-        <button id="joinRoom" class="secondary">
+        <button
+            id="joinRoom"
+            class="secondary"
+        >
             JOIN
         </button>
+
     </div>
 
 </div>
 
 </div>
+
 </section>
 
 <!-- LOBBY -->
@@ -1032,19 +1058,34 @@ button{
     <div class="lobby-top">
 
         <div class="lobby-title">
+
             <h2>Waiting room</h2>
-            <p>Players will automatically start when 2 or more are ready.</p>
+
+            <p>
+                Players will automatically start when
+                2 or more are ready.
+            </p>
+
         </div>
 
-        <div id="lobbyCode" class="room-code">
+        <div
+            id="lobbyCode"
+            class="room-code"
+        >
             -----
         </div>
 
     </div>
 
-    <div id="lobbyPlayers" class="player-grid"></div>
+    <div
+        id="lobbyPlayers"
+        class="player-grid"
+    ></div>
 
-    <div id="waitText" class="wait">
+    <div
+        id="waitText"
+        class="wait"
+    >
         Waiting for another player...
     </div>
 
@@ -1061,11 +1102,22 @@ button{
     <aside class="side">
 
         <div class="side-title">
+
             <h3>Players</h3>
-            <div id="playerCount" class="count">0/8</div>
+
+            <div
+                id="playerCount"
+                class="count"
+            >
+                0/8
+            </div>
+
         </div>
 
-        <div id="playerList" class="player-list"></div>
+        <div
+            id="playerList"
+            class="player-list"
+        ></div>
 
     </aside>
 
@@ -1080,17 +1132,26 @@ button{
 
             <div class="word-box">
 
-                <div id="wordLabel" class="word-label">
+                <div
+                    id="wordLabel"
+                    class="word-label"
+                >
                     DRAW THIS
                 </div>
 
-                <div id="word" class="word">
+                <div
+                    id="word"
+                    class="word"
+                >
                     Waiting...
                 </div>
 
             </div>
 
-            <div id="timer" class="timer">
+            <div
+                id="timer"
+                class="timer"
+            >
                 60
             </div>
 
@@ -1099,9 +1160,13 @@ button{
         <div class="canvas-area">
 
             <div class="canvas-box">
+
                 <canvas id="canvas"></canvas>
 
-                <div id="tools" class="tools hidden">
+                <div
+                    id="tools"
+                    class="tools hidden"
+                >
 
                     <button
                         class="tool selected"
@@ -1182,7 +1247,10 @@ button{
             <h3>Chat</h3>
         </div>
 
-        <div id="messages" class="messages"></div>
+        <div
+            id="messages"
+            class="messages"
+        ></div>
 
         <div class="chat-input">
 
@@ -1207,7 +1275,10 @@ button{
 
 <!-- RESULT -->
 
-<div id="modal" class="modal">
+<div
+    id="modal"
+    class="modal"
+>
 
 <div class="modal-card">
 
@@ -1224,7 +1295,10 @@ button{
         "
     ></p>
 
-    <div id="resultList" class="result-list"></div>
+    <div
+        id="resultList"
+        class="result-list"
+    ></div>
 
     <button
         id="closeModal"
@@ -1241,7 +1315,20 @@ button{
 </div>
 
 <script>
-const socket = io("https://scribblix-server.onrender.com");
+
+/* ======================================================
+   SOCKET.IO CONNECTION
+====================================================== */
+
+const socket = io(
+    "https://scribblix-server.onrender.com",
+    {
+        transports:[
+            "websocket",
+            "polling"
+        ]
+    }
+);
 
 let myId = null;
 let myName = "";
@@ -1267,6 +1354,11 @@ let pixelRatio = 1;
 const $ = id =>
     document.getElementById(id);
 
+
+/* ======================================================
+   SCREEN
+====================================================== */
+
 function showScreen(id){
 
     document
@@ -1278,11 +1370,18 @@ function showScreen(id){
     $(id).classList.add("active");
 
     if(id === "game"){
+
         requestAnimationFrame(() => {
             resizeCanvas(false);
         });
+
     }
 }
+
+
+/* ======================================================
+   MESSAGES
+====================================================== */
 
 function addMessage(
     text,
@@ -1295,13 +1394,16 @@ function addMessage(
     el.className =
         `msg ${type}`;
 
-    el.innerHTML = text;
+    el.innerHTML =
+        text;
 
-    $("messages").appendChild(el);
+    $("messages")
+        .appendChild(el);
 
     $("messages").scrollTop =
         $("messages").scrollHeight;
 }
+
 
 function escapeHTML(text){
 
@@ -1313,9 +1415,10 @@ function escapeHTML(text){
         .replaceAll("'","&#039;");
 }
 
-// ======================================================
-// CRAZYGAMES USER
-// ======================================================
+
+/* ======================================================
+   CRAZYGAMES USER
+====================================================== */
 
 async function loadCrazyGamesUser(){
 
@@ -1344,6 +1447,7 @@ async function loadCrazyGamesUser(){
                 possibleName &&
                 typeof possibleName === "string"
             ){
+
                 myName =
                     possibleName
                         .trim()
@@ -1360,19 +1464,44 @@ async function loadCrazyGamesUser(){
             "CrazyGames user unavailable:",
             error
         );
+
     }
 }
 
-// ======================================================
-// SOCKET
-// ======================================================
 
-socket.on("connect", () => {
+/* ======================================================
+   SOCKET EVENTS
+====================================================== */
 
-    myId = socket.id;
+socket.on(
+    "connect",
+    () => {
 
-    loadCrazyGamesUser();
-});
+        myId =
+            socket.id;
+
+        console.log(
+            "Connected to Scribblix server:",
+            myId
+        );
+
+        loadCrazyGamesUser();
+    }
+);
+
+
+socket.on(
+    "connect_error",
+    error => {
+
+        console.error(
+            "Scribblix connection error:",
+            error
+        );
+
+    }
+);
+
 
 socket.on(
     "roomCreated",
@@ -1389,6 +1518,7 @@ socket.on(
     }
 );
 
+
 socket.on(
     "joinedRoom",
     data => {
@@ -1403,6 +1533,7 @@ socket.on(
         showScreen("lobby");
     }
 );
+
 
 socket.on(
     "roomState",
@@ -1458,6 +1589,7 @@ socket.on(
     }
 );
 
+
 socket.on(
     "roundStarted",
     data => {
@@ -1486,9 +1618,10 @@ socket.on(
     }
 );
 
-// ======================================================
-// SECRET WORD
-// ======================================================
+
+/* ======================================================
+   SECRET WORD
+====================================================== */
 
 socket.on(
     "secretWord",
@@ -1497,7 +1630,6 @@ socket.on(
         secretWord =
             data.word || "";
 
-        // Actual word is shown ONLY to drawer.
         $("wordLabel")
             .textContent =
             "YOUR WORD";
@@ -1511,9 +1643,10 @@ socket.on(
     }
 );
 
-// ======================================================
-// TIMER
-// ======================================================
+
+/* ======================================================
+   TIMER
+====================================================== */
 
 socket.on(
     "timer",
@@ -1535,9 +1668,10 @@ socket.on(
     }
 );
 
-// ======================================================
-// ROUND END
-// ======================================================
+
+/* ======================================================
+   ROUND END
+====================================================== */
 
 socket.on(
     "roundEnded",
@@ -1562,9 +1696,10 @@ socket.on(
     }
 );
 
-// ======================================================
-// GAME FINISHED
-// ======================================================
+
+/* ======================================================
+   GAME FINISHED
+====================================================== */
 
 socket.on(
     "gameFinished",
@@ -1592,9 +1727,10 @@ socket.on(
     }
 );
 
-// ======================================================
-// CHAT
-// ======================================================
+
+/* ======================================================
+   CHAT
+====================================================== */
 
 socket.on(
     "chatMessage",
@@ -1605,6 +1741,7 @@ socket.on(
         );
     }
 );
+
 
 socket.on(
     "systemMessage",
@@ -1617,6 +1754,7 @@ socket.on(
     }
 );
 
+
 socket.on(
     "correctGuess",
     data => {
@@ -1628,6 +1766,7 @@ socket.on(
     }
 );
 
+
 socket.on(
     "errorMessage",
     message => {
@@ -1636,9 +1775,10 @@ socket.on(
     }
 );
 
-// ======================================================
-// DRAW EVENTS
-// ======================================================
+
+/* ======================================================
+   DRAW EVENTS
+====================================================== */
 
 socket.on(
     "draw",
@@ -1648,6 +1788,7 @@ socket.on(
     }
 );
 
+
 socket.on(
     "clearBoard",
     () => {
@@ -1656,9 +1797,10 @@ socket.on(
     }
 );
 
-// ======================================================
-// PLAYER UI
-// ======================================================
+
+/* ======================================================
+   PLAYER UI
+====================================================== */
 
 function avatarHTML(avatar){
 
@@ -1686,6 +1828,7 @@ function avatarHTML(avatar){
     `;
 }
 
+
 function renderLobby(players){
 
     $("lobbyPlayers").innerHTML =
@@ -1693,10 +1836,13 @@ function renderLobby(players){
 
             return `
                 <div class="player-slot">
+
                     ${avatarHTML(player.avatar)}
+
                     <div class="name">
                         ${escapeHTML(player.name)}
                     </div>
+
                 </div>
             `;
 
@@ -1707,6 +1853,7 @@ function renderLobby(players){
             ? "Starting game..."
             : "Waiting for another player...";
 }
+
 
 function renderPlayers(
     players,
@@ -1735,6 +1882,7 @@ function renderPlayers(
                                 player.avatar?.bg ||
                                 "#eef0f5"
                             };
+
                             color:${
                                 player.avatar?.fg ||
                                 "#687184"
@@ -1771,9 +1919,10 @@ function renderPlayers(
         }).join("");
 }
 
-// ======================================================
-// DRAWER UI
-// ======================================================
+
+/* ======================================================
+   DRAWER UI
+====================================================== */
 
 function updateDrawerUI(
     drawerId
@@ -1797,6 +1946,7 @@ function updateDrawerUI(
             $("word")
                 .textContent =
                 secretWord;
+
         }else{
 
             $("wordLabel")
@@ -1810,12 +1960,10 @@ function updateDrawerUI(
 
     }else{
 
-        // Tools MUST disappear when not drawer.
         $("tools")
             .classList
             .add("hidden");
 
-        // Guessers never see the word.
         $("wordLabel")
             .textContent =
             "DRAW THIS";
@@ -1826,9 +1974,10 @@ function updateDrawerUI(
     }
 }
 
-// ======================================================
-// CANVAS
-// ======================================================
+
+/* ======================================================
+   CANVAS
+====================================================== */
 
 function initCanvas(){
 
@@ -1843,9 +1992,12 @@ function initCanvas(){
     window.addEventListener(
         "resize",
         () => {
+
             requestAnimationFrame(
-                () => resizeCanvas(false)
+                () =>
+                    resizeCanvas(false)
             );
+
         }
     );
 
@@ -1875,18 +2027,11 @@ function initCanvas(){
     );
 }
 
-/*
-    IMPORTANT:
-    Do NOT resize the canvas every roomState.
-    If size has not changed, do absolutely nothing.
-
-    If the size really changes, copy the current bitmap
-    before changing canvas dimensions.
-*/
 
 function resizeCanvas(force){
 
-    if(!canvas || !ctx) return;
+    if(!canvas || !ctx)
+        return;
 
     const rect =
         canvas.getBoundingClientRect();
@@ -1954,9 +2099,6 @@ function resizeCanvas(force){
     const oldCssHeight =
         cssHeight;
 
-    const oldRatio =
-        pixelRatio;
-
     cssWidth =
         newWidth;
 
@@ -1988,8 +2130,11 @@ function resizeCanvas(force){
         0
     );
 
-    ctx.lineCap = "round";
-    ctx.lineJoin = "round";
+    ctx.lineCap =
+        "round";
+
+    ctx.lineJoin =
+        "round";
 
     if(
         hadDrawing &&
@@ -2011,6 +2156,7 @@ function resizeCanvas(force){
     }
 }
 
+
 function getPoint(event){
 
     const rect =
@@ -2027,6 +2173,7 @@ function getPoint(event){
     };
 }
 
+
 function drawLocalLine(
     x,
     y,
@@ -2036,8 +2183,11 @@ function drawLocalLine(
 
     ctx.save();
 
-    ctx.lineCap = "round";
-    ctx.lineJoin = "round";
+    ctx.lineCap =
+        "round";
+
+    ctx.lineJoin =
+        "round";
 
     if(erasing){
 
@@ -2076,6 +2226,7 @@ function drawLocalLine(
     ctx.restore();
 }
 
+
 function startDrawing(event){
 
     if(
@@ -2085,7 +2236,8 @@ function startDrawing(event){
         return;
     }
 
-    drawing = true;
+    drawing =
+        true;
 
     canvas.setPointerCapture(
         event.pointerId
@@ -2100,7 +2252,6 @@ function startDrawing(event){
     lastY =
         point.y;
 
-    // Tiny dot for click.
     drawLocalLine(
         point.x,
         point.y,
@@ -2109,9 +2260,11 @@ function startDrawing(event){
     );
 }
 
+
 function moveDrawing(event){
 
-    if(!drawing) return;
+    if(!drawing)
+        return;
 
     const point =
         getPoint(event);
@@ -2143,14 +2296,18 @@ function moveDrawing(event){
         point.y;
 }
 
+
 function stopDrawing(){
 
-    drawing = false;
+    drawing =
+        false;
 }
+
 
 function drawRemote(data){
 
-    if(!ctx) return;
+    if(!ctx)
+        return;
 
     ctx.save();
 
@@ -2178,8 +2335,11 @@ function drawRemote(data){
             Number(data.size) || 4
         );
 
-    ctx.lineCap = "round";
-    ctx.lineJoin = "round";
+    ctx.lineCap =
+        "round";
+
+    ctx.lineJoin =
+        "round";
 
     ctx.beginPath();
 
@@ -2198,9 +2358,11 @@ function drawRemote(data){
     ctx.restore();
 }
 
+
 function clearCanvas(){
 
-    if(!canvas || !ctx) return;
+    if(!canvas || !ctx)
+        return;
 
     ctx.save();
 
@@ -2223,9 +2385,10 @@ function clearCanvas(){
     ctx.restore();
 }
 
-// ======================================================
-// TOOLS
-// ======================================================
+
+/* ======================================================
+   TOOLS
+====================================================== */
 
 document
     .querySelectorAll(
@@ -2240,7 +2403,8 @@ document
                     button.dataset.size
                 );
 
-            erasing = false;
+            erasing =
+                false;
 
             document
                 .querySelectorAll(
@@ -2257,9 +2421,11 @@ document
         };
     });
 
+
 $("eraser").onclick = () => {
 
-    erasing = true;
+    erasing =
+        true;
 
     document
         .querySelectorAll(
@@ -2276,12 +2442,14 @@ $("eraser").onclick = () => {
         .add("selected");
 };
 
+
 $("clear").onclick = () => {
 
     if(
         currentState &&
         currentState.drawerId === myId
     ){
+
         clearCanvas();
 
         socket.emit(
@@ -2289,6 +2457,7 @@ $("clear").onclick = () => {
         );
     }
 };
+
 
 document
     .querySelectorAll(
@@ -2301,7 +2470,8 @@ document
             brushColor =
                 button.dataset.color;
 
-            erasing = false;
+            erasing =
+                false;
 
             document
                 .querySelectorAll(
@@ -2315,9 +2485,10 @@ document
         };
     });
 
-// ======================================================
-// CHAT
-// ======================================================
+
+/* ======================================================
+   CHAT
+====================================================== */
 
 function sendChat(){
 
@@ -2327,18 +2498,24 @@ function sendChat(){
     const message =
         input.value.trim();
 
-    if(!message) return;
+    if(!message)
+        return;
 
     socket.emit(
         "chat",
-        { message }
+        {
+            message
+        }
     );
 
-    input.value = "";
+    input.value =
+        "";
 }
+
 
 $("sendChat").onclick =
     sendChat;
+
 
 $("chatInput").addEventListener(
     "keydown",
@@ -2347,14 +2524,16 @@ $("chatInput").addEventListener(
         if(
             event.key === "Enter"
         ){
+
             sendChat();
         }
     }
 );
 
-// ======================================================
-// HOME BUTTONS
-// ======================================================
+
+/* ======================================================
+   HOME BUTTONS
+====================================================== */
 
 function getName(){
 
@@ -2364,36 +2543,44 @@ function getName(){
             .trim();
 
     if(entered){
+
         myName =
             entered.slice(0,18);
     }
 
     if(!myName){
-        myName = "Player";
+
+        myName =
+            "Player";
     }
 
     return myName;
 }
+
 
 $("createRoom").onclick = () => {
 
     socket.emit(
         "createRoom",
         {
-            name:getName()
+            name:
+                getName()
         }
     );
 };
+
 
 $("quickJoin").onclick = () => {
 
     socket.emit(
         "quickJoin",
         {
-            name:getName()
+            name:
+                getName()
         }
     );
 };
+
 
 $("joinRoom").onclick = () => {
 
@@ -2416,14 +2603,16 @@ $("joinRoom").onclick = () => {
         "joinRoom",
         {
             code,
-            name:getName()
+            name:
+                getName()
         }
     );
 };
 
-// ======================================================
-// RESULTS
-// ======================================================
+
+/* ======================================================
+   RESULTS
+====================================================== */
 
 function renderResults(
     leaderboard
@@ -2455,6 +2644,7 @@ function renderResults(
         ).join("");
 }
 
+
 $("closeModal").onclick = () => {
 
     $("modal")
@@ -2462,36 +2652,47 @@ $("closeModal").onclick = () => {
         .remove("show");
 };
 
-// ======================================================
-// INITIALIZE
-// ======================================================
+
+/* ======================================================
+   INITIALIZE
+====================================================== */
 
 initCanvas();
+
 
 window.addEventListener(
     "orientationchange",
     () => {
 
-        setTimeout(() => {
-            resizeCanvas(false);
-        }, 250);
+        setTimeout(
+            () => {
+                resizeCanvas(false);
+            },
+            250
+        );
 
     }
 );
+
 
 window.addEventListener(
     "keydown",
     event => {
 
         if(
-            ["ArrowUp","ArrowDown"," "]
-                .includes(event.key)
+            [
+                "ArrowUp",
+                "ArrowDown",
+                " "
+            ].includes(event.key)
         ){
+
             event.preventDefault();
         }
 
     }
 );
+
 </script>
 
 </body>
