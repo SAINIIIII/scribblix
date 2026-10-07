@@ -2,18 +2,10 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-
-<meta
-    name="viewport"
-    content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"
-/>
-
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <title>Scribblix</title>
 
-<!-- CrazyGames SDK -->
 <script src="https://sdk.crazygames.com/crazygames-sdk-v3.js"></script>
-
-<!-- Socket.IO CLIENT -->
 <script src="./socket.io.min.js"></script>
 
 <style>
@@ -24,17 +16,17 @@
 }
 
 :root{
-    --bg:#f6f8fc;
-    --panel:#ffffff;
-    --panel2:#f9faff;
-    --line:#e8ebf2;
-    --text:#172033;
-    --muted:#7b8496;
-    --primary:#5b63e9;
-    --primary2:#7b6cf6;
-    --green:#24b47e;
-    --red:#ef6262;
-    --shadow:0 20px 60px rgba(37,45,80,.10);
+    --purple:#6858e8;
+    --purple2:#907cf5;
+    --pink:#ff6687;
+    --green:#39c88b;
+    --blue:#5b8def;
+    --yellow:#ffc857;
+    --ink:#202338;
+    --muted:#7d8295;
+    --line:#e8e5ef;
+    --soft:#f7f6fb;
+    --white:#fff;
 }
 
 html,
@@ -42,16 +34,9 @@ body{
     width:100%;
     height:100%;
     overflow:hidden;
-    font-family:
-        Inter,
-        ui-sans-serif,
-        system-ui,
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        sans-serif;
-    background:var(--bg);
-    color:var(--text);
+    background:#f3f1fb;
+    color:var(--ink);
+    font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
 }
 
 button,
@@ -62,16 +47,21 @@ input{
 button{
     border:0;
     cursor:pointer;
+    -webkit-tap-highlight-color:transparent;
+}
+
+input{
+    outline:none;
 }
 
 .app{
-    position:relative;
     width:100%;
     height:100%;
     overflow:hidden;
+    position:relative;
 }
 
-.bg{
+.background{
     position:absolute;
     inset:0;
     overflow:hidden;
@@ -80,41 +70,41 @@ button{
 
 .blob{
     position:absolute;
-    width:420px;
-    height:420px;
     border-radius:50%;
     filter:blur(55px);
-    opacity:.35;
+    opacity:.5;
     animation:float 12s ease-in-out infinite;
 }
 
-.blob.one{
-    background:#d8ddff;
+.blob.a{
+    width:360px;
+    height:360px;
+    background:#ded9ff;
     left:-150px;
-    top:-160px;
+    top:-150px;
 }
 
-.blob.two{
-    background:#d9f7ee;
-    right:-160px;
-    top:15%;
+.blob.b{
+    width:320px;
+    height:320px;
+    background:#d8f8ec;
+    right:-150px;
+    top:20%;
     animation-delay:-4s;
 }
 
-.blob.three{
-    background:#ffe6d2;
-    left:30%;
-    bottom:-260px;
-    animation-delay:-7s;
+.blob.c{
+    width:340px;
+    height:300px;
+    background:#ffe0e8;
+    bottom:-180px;
+    left:38%;
+    animation-delay:-8s;
 }
 
 @keyframes float{
-    0%,100%{
-        transform:translate(0,0);
-    }
-    50%{
-        transform:translate(35px,-25px);
-    }
+    0%,100%{transform:translate(0,0)}
+    50%{transform:translate(25px,-20px)}
 }
 
 .screen{
@@ -122,6 +112,7 @@ button{
     z-index:2;
     width:100%;
     height:100%;
+    min-height:0;
     display:none;
 }
 
@@ -129,371 +120,492 @@ button{
     display:flex;
 }
 
-/* HOME */
+/* =========================
+   HOME
+========================= */
 
 .home{
     align-items:center;
     justify-content:center;
-    padding:24px;
+    padding:18px;
+    overflow:auto;
 }
 
 .home-card{
-    width:min(1050px,100%);
+    width:min(1080px,100%);
     display:grid;
-    grid-template-columns:1.1fr .9fr;
-    gap:30px;
-    background:rgba(255,255,255,.88);
-    border:1px solid rgba(255,255,255,.8);
-    border-radius:32px;
-    padding:34px;
-    box-shadow:var(--shadow);
+    grid-template-columns:1.12fr .88fr;
+    gap:28px;
+    padding:32px;
+    border:1px solid rgba(255,255,255,.9);
+    border-radius:34px;
+    background:rgba(255,255,255,.92);
+    box-shadow:0 25px 80px rgba(47,40,89,.13);
     backdrop-filter:blur(18px);
+    animation:appear .45s ease;
+}
+
+@keyframes appear{
+    from{
+        opacity:0;
+        transform:translateY(16px) scale(.98);
+    }
+    to{
+        opacity:1;
+        transform:none;
+    }
+}
+
+.hero{
+    padding:10px;
 }
 
 .brand{
     display:flex;
     align-items:center;
-    gap:13px;
+    gap:12px;
 }
 
 .logo{
-    width:54px;
-    height:54px;
-    border-radius:17px;
+    width:56px;
+    height:56px;
+    border-radius:18px;
     display:grid;
     place-items:center;
-    color:white;
-    font-weight:900;
-    font-size:23px;
-    background:linear-gradient(
-        135deg,
-        var(--primary),
-        var(--primary2)
-    );
-    box-shadow:
-        0 10px 25px rgba(91,99,233,.25);
+    color:#fff;
+    background:linear-gradient(145deg,var(--purple),var(--purple2));
+    font-size:27px;
+    font-weight:1000;
+    transform:rotate(-4deg);
+    box-shadow:0 13px 28px rgba(104,88,232,.25);
 }
 
 .brand h1{
-    font-size:29px;
-    letter-spacing:-1px;
+    font-size:31px;
+    font-weight:1000;
+    letter-spacing:-1.7px;
 }
 
-.brand span{
-    color:var(--primary);
-}
-
-.hero{
-    padding:25px;
+.brand h1 span{
+    color:var(--purple);
 }
 
 .hero h2{
-    margin-top:48px;
-    font-size:clamp(38px,5vw,68px);
-    line-height:.95;
-    letter-spacing:-4px;
+    margin-top:52px;
+    font-size:clamp(44px,6vw,78px);
+    line-height:.88;
+    letter-spacing:-5px;
+    font-weight:1000;
 }
 
 .hero h2 span{
-    color:var(--primary);
+    color:var(--purple);
 }
 
 .hero p{
-    margin-top:22px;
+    max-width:530px;
+    margin-top:24px;
     color:var(--muted);
-    font-size:16px;
-    line-height:1.6;
-    max-width:550px;
+    font-size:15px;
+    line-height:1.65;
 }
 
-.mini-features{
+.features{
     display:flex;
     flex-wrap:wrap;
-    gap:9px;
-    margin-top:24px;
+    gap:8px;
+    margin-top:22px;
 }
 
-.pill{
-    padding:9px 13px;
+.feature{
+    padding:9px 12px;
     border:1px solid var(--line);
+    border-radius:12px;
     background:#fff;
-    border-radius:999px;
-    font-size:12px;
-    font-weight:700;
-    color:#687184;
+    color:#696e80;
+    font-size:10px;
+    font-weight:900;
 }
 
 .join-card{
     align-self:center;
-    background:#fff;
+    padding:27px;
     border:1px solid var(--line);
-    border-radius:25px;
-    padding:25px;
-    box-shadow:0 14px 40px rgba(30,40,80,.07);
+    border-radius:26px;
+    background:#fff;
+    box-shadow:0 12px 40px rgba(45,39,86,.08);
 }
 
 .join-card h3{
-    font-size:22px;
+    font-size:25px;
+    font-weight:1000;
 }
 
-.join-card .sub{
-    margin-top:7px;
+.sub{
+    margin-top:5px;
     color:var(--muted);
-    font-size:13px;
+    font-size:12px;
+    line-height:1.5;
+}
+
+.name-preview{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-top:18px;
+    padding:10px;
+    border-radius:15px;
+    background:#f7f5ff;
+    border:1px solid #e9e5ff;
+}
+
+.preview-avatar{
+    width:42px;
+    height:42px;
+    border-radius:13px;
+    display:grid;
+    place-items:center;
+    background:#ded9ff;
+    color:#6557d8;
+    font-weight:1000;
+}
+
+.preview-info small{
+    display:block;
+    color:#969aaa;
+    font-size:8px;
+    font-weight:900;
+}
+
+.preview-info strong{
+    display:block;
+    margin-top:2px;
+    font-size:12px;
 }
 
 .field{
-    margin-top:18px;
+    margin-top:14px;
 }
 
 .field label{
     display:block;
-    font-size:12px;
-    font-weight:800;
-    margin-bottom:8px;
-    color:#687184;
+    margin-bottom:7px;
+    color:#777c8e;
+    font-size:9px;
+    font-weight:1000;
+    letter-spacing:1px;
 }
 
-.field input{
+.field input,
+.join-code{
     width:100%;
     height:49px;
+    padding:0 13px;
     border:1px solid var(--line);
-    outline:0;
-    border-radius:13px;
-    padding:0 14px;
-    background:#fafbfe;
-    color:var(--text);
+    border-radius:14px;
+    background:#faf9fd;
+    color:var(--ink);
 }
 
-.field input:focus{
-    border-color:#b8bcfa;
-    box-shadow:0 0 0 4px rgba(91,99,233,.08);
+.field input:focus,
+.join-code:focus{
+    border-color:#bdb4fa;
+    box-shadow:0 0 0 4px rgba(104,88,232,.08);
 }
 
 .primary{
     width:100%;
-    height:50px;
-    border-radius:14px;
-    color:white;
-    font-weight:850;
-    background:linear-gradient(
-        135deg,
-        var(--primary),
-        var(--primary2)
-    );
-    box-shadow:0 10px 25px rgba(91,99,233,.20);
-    transition:.18s;
+    height:51px;
+    margin-top:11px;
+    border-radius:15px;
+    color:#fff;
+    background:linear-gradient(135deg,var(--purple),var(--purple2));
+    font-weight:1000;
+    box-shadow:0 10px 25px rgba(104,88,232,.2);
+    transition:.15s;
 }
 
 .primary:hover{
-    transform:translateY(-1px);
+    transform:translateY(-2px);
+}
+
+.primary:active{
+    transform:scale(.98);
 }
 
 .quick{
-    margin-top:10px;
-    background:#eef0ff;
-    color:#555ed8;
-    box-shadow:none;
+    background:linear-gradient(135deg,#ff6687,#ff8063);
+    box-shadow:0 10px 25px rgba(255,102,135,.18);
 }
 
 .divider{
     display:flex;
     align-items:center;
     gap:10px;
-    margin:18px 0;
-    color:#a1a8b6;
-    font-size:11px;
-    font-weight:800;
+    margin:16px 0;
+    color:#a1a5b4;
+    font-size:9px;
+    font-weight:1000;
 }
 
-.divider::before,
-.divider::after{
+.divider:before,
+.divider:after{
     content:"";
+    flex:1;
     height:1px;
     background:var(--line);
-    flex:1;
 }
 
 .join-row{
     display:grid;
-    grid-template-columns:1fr 105px;
-    gap:9px;
+    grid-template-columns:1fr 88px;
+    gap:8px;
 }
 
 .secondary{
     height:49px;
-    border-radius:13px;
-    background:#f1f3f8;
-    color:#4e5667;
-    font-weight:800;
+    border-radius:14px;
+    background:#eeecf6;
+    color:#5f6476;
+    font-weight:1000;
 }
 
-/* LOBBY */
+/* =========================
+   LOBBY
+========================= */
 
 .lobby{
     align-items:center;
     justify-content:center;
-    padding:20px;
+    padding:18px;
 }
 
 .lobby-card{
-    width:min(720px,100%);
-    background:#fff;
+    width:min(790px,100%);
+    max-height:94%;
+    overflow:auto;
+    padding:28px;
     border:1px solid var(--line);
-    border-radius:28px;
-    padding:27px;
-    box-shadow:var(--shadow);
+    border-radius:30px;
+    background:#fff;
+    box-shadow:0 25px 75px rgba(47,40,89,.12);
 }
 
 .lobby-top{
     display:flex;
     justify-content:space-between;
-    gap:20px;
     align-items:flex-start;
+    gap:15px;
 }
 
 .lobby-title h2{
-    font-size:27px;
+    font-size:28px;
+    font-weight:1000;
 }
 
 .lobby-title p{
     margin-top:5px;
     color:var(--muted);
-    font-size:13px;
+    font-size:12px;
 }
 
 .room-code{
-    background:#f0f2ff;
-    border:1px solid #e0e2ff;
-    color:#555ed8;
-    padding:10px 13px;
+    padding:11px 15px;
     border-radius:13px;
-    font-weight:900;
-    letter-spacing:2px;
+    background:#efedff;
+    color:#6154d1;
+    font-size:14px;
+    font-weight:1000;
+    letter-spacing:3px;
 }
 
 .player-grid{
-    margin-top:23px;
     display:grid;
     grid-template-columns:repeat(4,1fr);
     gap:10px;
+    margin-top:22px;
 }
 
 .player-slot{
-    min-height:104px;
-    padding:14px;
-    border-radius:18px;
-    background:#fafbfe;
-    border:1px solid var(--line);
+    min-height:115px;
     display:flex;
     flex-direction:column;
     justify-content:center;
     align-items:center;
-    text-align:center;
+    border:1px solid var(--line);
+    border-radius:18px;
+    background:#faf9fd;
+    animation:slot .3s ease both;
 }
 
-.avatar{
-    width:42px;
-    height:42px;
-    border-radius:14px;
-    display:grid;
-    place-items:center;
-    font-weight:900;
-    margin-bottom:7px;
+@keyframes slot{
+    from{
+        opacity:0;
+        transform:translateY(8px);
+    }
+    to{
+        opacity:1;
+        transform:none;
+    }
 }
 
 .player-slot .name{
-    max-width:100%;
+    max-width:90%;
+    margin-top:8px;
     overflow:hidden;
     text-overflow:ellipsis;
     white-space:nowrap;
+    font-size:11px;
+    font-weight:1000;
+}
+
+.wait{
+    margin-top:18px;
+    text-align:center;
+    color:var(--muted);
     font-size:12px;
     font-weight:800;
 }
 
-.wait{
-    margin-top:20px;
-    text-align:center;
-    color:var(--muted);
-    font-size:13px;
+/* =========================
+   AVATAR
+========================= */
+
+.avatar{
+    position:relative;
+    width:50px;
+    height:50px;
+    overflow:hidden;
+    flex:none;
+    border-radius:16px;
 }
 
-/* GAME */
+.avatar .head{
+    position:absolute;
+    width:24px;
+    height:24px;
+    left:13px;
+    top:9px;
+    border-radius:50%;
+    background:#ffd9b8;
+}
+
+.avatar .hair{
+    position:absolute;
+    width:29px;
+    height:15px;
+    left:10px;
+    top:5px;
+    border-radius:16px 16px 7px 7px;
+}
+
+.avatar .body{
+    position:absolute;
+    width:35px;
+    height:21px;
+    left:8px;
+    bottom:-3px;
+    border-radius:18px 18px 6px 6px;
+}
+
+.avatar .eye{
+    position:absolute;
+    width:3px;
+    height:3px;
+    top:19px;
+    border-radius:50%;
+    background:#292537;
+}
+
+.avatar .e1{left:19px}
+.avatar .e2{left:28px}
+
+/* =========================
+   GAME
+========================= */
 
 .game{
-    padding:14px;
+    height:100%;
+    min-height:0;
+    padding:8px;
+    overflow:hidden;
 }
 
 .game-shell{
     width:100%;
     height:100%;
+    min-height:0;
     display:grid;
-    grid-template-columns:250px minmax(0,1fr) 300px;
-    gap:12px;
+    grid-template-columns:220px minmax(0,1fr) 285px;
+    gap:8px;
 }
 
 .side,
 .board-wrap,
 .chat{
-    background:rgba(255,255,255,.94);
-    border:1px solid var(--line);
-    border-radius:22px;
-    box-shadow:0 10px 35px rgba(30,40,80,.06);
+    min-width:0;
     min-height:0;
+    border:1px solid var(--line);
+    border-radius:21px;
+    background:rgba(255,255,255,.97);
+    box-shadow:0 8px 30px rgba(45,39,86,.07);
 }
 
 .side{
-    padding:14px;
-    overflow:auto;
+    padding:12px;
+    overflow:hidden;
 }
 
 .side-title{
     display:flex;
     align-items:center;
     justify-content:space-between;
-    margin-bottom:12px;
+    margin-bottom:10px;
 }
 
-.side-title h3{
-    font-size:15px;
+.side-title h3,
+.chat-head h3{
+    font-size:14px;
+    font-weight:1000;
 }
 
 .count{
-    color:var(--muted);
-    font-size:11px;
-    font-weight:800;
+    padding:5px 8px;
+    border-radius:8px;
+    background:#f0eef7;
+    color:#7c8192;
+    font-size:9px;
+    font-weight:1000;
 }
 
 .player-list{
     display:flex;
     flex-direction:column;
-    gap:8px;
+    gap:7px;
+    max-height:calc(100% - 30px);
+    overflow:auto;
 }
 
 .game-player{
+    min-width:0;
     display:flex;
     align-items:center;
-    gap:9px;
-    padding:10px;
+    gap:8px;
+    padding:8px;
     border:1px solid var(--line);
     border-radius:14px;
-    background:#fbfcff;
+    background:#fcfbfe;
 }
 
 .game-player.active-drawer{
-    border-color:#c8cbff;
-    background:#f2f3ff;
+    background:#f0edff;
+    border-color:#cec6ff;
 }
 
-.game-player .p-avatar{
-    flex:none;
-    width:36px;
-    height:36px;
+.p-avatar .avatar{
+    width:38px;
+    height:38px;
     border-radius:12px;
-    display:grid;
-    place-items:center;
-    font-weight:900;
-    font-size:12px;
 }
 
 .p-info{
@@ -502,24 +614,26 @@ button{
 }
 
 .p-name{
-    font-size:12px;
-    font-weight:850;
-    white-space:nowrap;
     overflow:hidden;
     text-overflow:ellipsis;
+    white-space:nowrap;
+    font-size:11px;
+    font-weight:1000;
 }
 
 .p-score{
-    color:var(--muted);
-    font-size:11px;
     margin-top:2px;
+    color:#898e9f;
+    font-size:9px;
 }
 
 .turn-badge{
-    font-size:9px;
-    font-weight:900;
-    color:#5b63e9;
+    color:#6254d1;
+    font-size:7px;
+    font-weight:1000;
 }
+
+/* BOARD */
 
 .board-wrap{
     display:flex;
@@ -528,73 +642,84 @@ button{
 }
 
 .topbar{
-    min-height:66px;
-    display:flex;
+    flex:none;
+    min-height:63px;
+    display:grid;
+    grid-template-columns:1fr auto 1fr;
     align-items:center;
-    justify-content:space-between;
-    gap:12px;
-    padding:12px 15px;
+    gap:9px;
+    padding:8px 12px;
     border-bottom:1px solid var(--line);
 }
 
 .round-label{
-    font-size:12px;
-    font-weight:900;
-    color:#697286;
+    color:#858a9b;
+    font-size:9px;
+    font-weight:1000;
 }
 
 .round-label strong{
-    color:var(--text);
+    color:var(--ink);
 }
 
 .word-box{
     min-width:190px;
-    text-align:center;
-    padding:9px 15px;
+    padding:7px 13px;
+    border:1px solid #e3defe;
     border-radius:14px;
-    background:#f2f3ff;
-    color:#565fdc;
+    background:#f0edff;
+    text-align:center;
 }
 
 .word-label{
-    font-size:9px;
-    text-transform:uppercase;
+    color:#8176c8;
+    font-size:7px;
+    font-weight:1000;
     letter-spacing:1.4px;
-    font-weight:900;
-    opacity:.65;
 }
 
 .word{
-    margin-top:2px;
-    font-size:17px;
-    font-weight:950;
+    margin-top:3px;
+    color:#5549bf;
+    font-size:16px;
+    font-weight:1000;
 }
 
 .timer{
-    min-width:66px;
+    justify-self:end;
+    min-width:52px;
+    padding:7px;
+    border-radius:11px;
+    background:#fff5d8;
+    color:#987218;
     text-align:center;
-    font-size:20px;
-    font-weight:950;
+    font-size:17px;
+    font-weight:1000;
+}
+
+.timer.danger{
+    background:#ffe8ed;
+    color:#db496d;
 }
 
 .canvas-area{
     position:relative;
     flex:1;
     min-height:0;
-    padding:12px;
-    background:#f7f8fb;
+    overflow:hidden;
+    padding:9px;
+    background:#f7f6fb;
 }
 
 .canvas-box{
     position:relative;
     width:100%;
     height:100%;
-    min-height:240px;
-    border-radius:17px;
+    min-height:0;
     overflow:hidden;
-    background:white;
-    border:1px solid #e7e9ef;
-    box-shadow:inset 0 0 0 1px rgba(0,0,0,.015);
+    border:1px solid #e6e3ed;
+    border-radius:18px;
+    background:#fff;
 }
 
 #canvas{
@@ -605,44 +730,58 @@ button{
     cursor:crosshair;
 }
 
+/* TOOLS */
+
 .tools{
     position:absolute;
-    left:24px;
-    bottom:24px;
+    left:15px;
+    bottom:15px;
     display:flex;
     align-items:center;
-    gap:6px;
+    gap:5px;
+    max-width:calc(100% - 30px);
     padding:7px;
-    background:rgba(255,255,255,.94);
-    border:1px solid var(--line);
-    border-radius:14px;
-    box-shadow:0 9px 30px rgba(20,30,70,.12);
+    overflow-x:auto;
+    overflow-y:hidden;
+    border:1px solid #e3e0e9;
+    border-radius:15px;
+    background:rgba(255,255,255,.97);
+    box-shadow:0 12px 30px rgba(40,34,75,.14);
+    scrollbar-width:none;
+}
+
+.tools::-webkit-scrollbar{
+    display:none;
 }
 
 .tool{
-    width:35px;
-    height:35px;
-    border-radius:10px;
-    background:#f1f3f8;
-    color:#596174;
+    width:36px;
+    height:36px;
+    flex:none;
     display:grid;
     place-items:center;
-    font-size:12px;
-    font-weight:900;
+    border-radius:10px;
+    background:#f0eef6;
+    color:#666b7d;
+    font-size:10px;
+    font-weight:1000;
 }
 
 .tool.selected{
-    background:#5b63e9;
-    color:white;
+    color:#fff;
+    background:var(--purple);
 }
 
 .color{
-    width:22px;
-    height:22px;
+    width:23px;
+    height:23px;
+    flex:none;
     border-radius:50%;
-    border:2px solid white;
-    box-shadow:0 0 0 1px #d9dce5;
+    border:3px solid white;
+    box-shadow:0 0 0 1px #d8d5df;
 }
+
+/* CHAT */
 
 .chat{
     display:flex;
@@ -651,84 +790,93 @@ button{
 }
 
 .chat-head{
-    padding:15px;
+    flex:none;
+    height:51px;
+    display:flex;
+    align-items:center;
+    padding:12px;
     border-bottom:1px solid var(--line);
-}
-
-.chat-head h3{
-    font-size:15px;
 }
 
 .messages{
     flex:1;
-    overflow:auto;
-    padding:12px;
+    min-height:0;
+    overflow-y:auto;
+    padding:9px;
     display:flex;
     flex-direction:column;
-    gap:7px;
+    gap:5px;
 }
 
 .msg{
-    padding:8px 10px;
-    border-radius:11px;
-    background:#f6f7fa;
-    font-size:12px;
+    padding:7px 8px;
+    border-radius:10px;
+    background:#f5f4f8;
+    color:#555b6d;
+    font-size:10px;
     line-height:1.4;
+    word-break:break-word;
 }
 
 .msg strong{
-    font-weight:900;
+    color:var(--ink);
 }
 
 .msg.system{
-    background:#f0f2ff;
-    color:#5961d6;
+    color:#6258c8;
+    background:#efedff;
 }
 
 .msg.correct{
-    background:#eaf9f2;
-    color:#16815c;
-    font-weight:800;
+    color:#19825d;
+    background:#e5f8ef;
+    font-weight:900;
 }
 
 .chat-input{
+    flex:none;
     display:flex;
-    gap:7px;
-    padding:10px;
+    gap:6px;
+    padding:8px;
     border-top:1px solid var(--line);
 }
 
 .chat-input input{
-    flex:1;
     min-width:0;
-    height:42px;
+    flex:1;
+    height:40px;
+    padding:0 10px;
     border:1px solid var(--line);
     border-radius:11px;
-    padding:0 11px;
-    outline:0;
-    background:#fafbfe;
+    background:#faf9fd;
+    font-size:11px;
 }
 
 .chat-input button{
-    width:44px;
+    width:41px;
+    height:40px;
+    flex:none;
     border-radius:11px;
-    background:#5b63e9;
-    color:white;
-    font-weight:900;
+    background:var(--purple);
+    color:#fff;
+    font-size:17px;
+    font-weight:1000;
 }
 
-/* RESULT */
+/* =========================
+   RESULT MODAL
+========================= */
 
 .modal{
     position:fixed;
     inset:0;
-    z-index:20;
+    z-index:50;
     display:none;
     align-items:center;
     justify-content:center;
-    padding:20px;
-    background:rgba(22,28,48,.35);
-    backdrop-filter:blur(8px);
+    padding:15px;
+    background:rgba(30,26,52,.42);
+    backdrop-filter:blur(9px);
 }
 
 .modal.show{
@@ -736,136 +884,338 @@ button{
 }
 
 .modal-card{
-    width:min(480px,100%);
-    max-height:90vh;
+    width:min(500px,100%);
+    max-height:90%;
     overflow:auto;
-    background:#fff;
-    border-radius:26px;
     padding:25px;
-    box-shadow:0 30px 90px rgba(20,30,70,.2);
+    border-radius:28px;
+    background:#fff;
+    box-shadow:0 30px 90px rgba(30,25,60,.22);
+    animation:appear .3s ease;
 }
 
 .modal-card h2{
-    font-size:27px;
+    font-size:28px;
+    font-weight:1000;
+}
+
+.modal-sub{
+    margin-top:5px;
+    color:var(--muted);
+    font-size:12px;
 }
 
 .result-list{
-    margin-top:17px;
     display:flex;
     flex-direction:column;
-    gap:8px;
+    gap:7px;
+    margin-top:17px;
 }
 
 .result-row{
     display:flex;
     align-items:center;
-    gap:10px;
-    padding:11px;
-    background:#f8f9fc;
+    gap:9px;
+    padding:10px;
     border:1px solid var(--line);
     border-radius:14px;
+    background:#faf9fd;
 }
 
 .rank{
-    width:30px;
-    font-weight:950;
-    color:#71798b;
+    width:25px;
+    font-size:12px;
+    font-weight:1000;
+}
+
+.result-avatar .avatar{
+    width:36px;
+    height:36px;
+    border-radius:11px;
 }
 
 .result-name{
     flex:1;
-    font-size:13px;
-    font-weight:850;
+    min-width:0;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    font-size:11px;
+    font-weight:1000;
 }
 
 .result-score{
-    font-weight:950;
+    padding:6px 9px;
+    border-radius:8px;
+    background:#efedff;
+    color:#5c50c8;
+    font-size:10px;
+    font-weight:1000;
 }
 
-/* RESPONSIVE */
+.hidden{
+    display:none !important;
+}
+
+
+/* =========================
+   TABLET
+========================= */
 
 @media(max-width:1050px){
 
-    .game-shell{
-        grid-template-columns:190px minmax(0,1fr) 250px;
-    }
-
     .home-card{
         grid-template-columns:1fr;
-        max-width:650px;
-        max-height:94vh;
+        width:min(650px,100%);
+        max-height:94%;
         overflow:auto;
     }
 
     .hero h2{
-        margin-top:25px;
+        margin-top:30px;
+    }
+
+    .game-shell{
+        grid-template-columns:180px minmax(0,1fr) 235px;
     }
 }
+
+
+/* =========================
+   MOBILE PORTRAIT
+========================= */
 
 @media(max-width:800px){
 
     .game{
-        padding:8px;
+        padding:4px;
     }
 
     .game-shell{
-        grid-template-columns:1fr;
-        grid-template-rows:auto minmax(0,1fr) auto;
+        height:100%;
+        grid-template-columns:minmax(0,1fr);
+        grid-template-rows:64px minmax(0,1fr) 112px;
+        gap:4px;
     }
 
     .side{
-        max-height:105px;
+        height:64px;
+        min-height:64px;
+        padding:5px 7px;
+        border-radius:14px;
         overflow:hidden;
     }
 
+    .side-title{
+        display:none;
+    }
+
     .player-list{
+        width:100%;
+        height:100%;
+        max-height:none;
         flex-direction:row;
-        overflow:auto;
+        align-items:center;
+        overflow-x:auto;
+        overflow-y:hidden;
+        scrollbar-width:none;
+    }
+
+    .player-list::-webkit-scrollbar{
+        display:none;
     }
 
     .game-player{
-        min-width:145px;
+        min-width:118px;
+        height:52px;
+        padding:6px;
+        border-radius:12px;
     }
 
-    .chat{
-        max-height:180px;
+    .game-player .p-avatar .avatar{
+        width:34px;
+        height:34px;
+    }
+
+    .p-name{
+        font-size:9px;
+    }
+
+    .p-score{
+        font-size:8px;
+    }
+
+    .turn-badge{
+        display:none;
+    }
+
+    .board-wrap{
+        height:auto;
+        min-height:0;
+        border-radius:14px;
+    }
+
+    .topbar{
+        height:50px;
+        min-height:50px;
+        padding:5px 7px;
+        gap:4px;
+    }
+
+    .round-label{
+        font-size:8px;
+    }
+
+    .word-box{
+        min-width:115px;
+        max-width:48vw;
+        padding:6px 8px;
+    }
+
+    .word-label{
+        font-size:6px;
+    }
+
+    .word{
+        font-size:12px;
+    }
+
+    .timer{
+        min-width:42px;
+        font-size:14px;
+        padding:6px 4px;
     }
 
     .canvas-area{
         min-height:0;
+        padding:4px;
     }
 
-    .topbar{
-        min-height:58px;
+    .canvas-box{
+        height:100%;
+        min-height:0;
+        border-radius:12px;
     }
 
-    .word-box{
-        min-width:145px;
+    .tools{
+        left:7px;
+        right:7px;
+        bottom:7px;
+        max-width:none;
+        padding:5px;
+        border-radius:12px;
+    }
+
+    .tool{
+        width:33px;
+        height:33px;
+    }
+
+    .color{
+        width:20px;
+        height:20px;
+    }
+
+    .chat{
+        height:112px;
+        min-height:112px;
+        max-height:112px;
+        border-radius:14px;
+    }
+
+    .chat-head{
+        height:30px;
+        padding:6px 9px;
+    }
+
+    .chat-head h3{
+        font-size:10px;
+    }
+
+    .messages{
+        padding:4px 7px;
+        gap:3px;
+    }
+
+    .msg{
+        padding:4px 6px;
+        font-size:8px;
+    }
+
+    .chat-input{
+        height:42px;
+        padding:5px;
+    }
+
+    .chat-input input{
+        height:32px;
+        font-size:9px;
+    }
+
+    .chat-input button{
+        width:37px;
+        height:32px;
     }
 }
+
+
+/* =========================
+   SMALL PHONE
+========================= */
 
 @media(max-width:560px){
 
     .home{
-        padding:10px;
+        padding:7px;
     }
 
     .home-card{
-        padding:15px;
+        padding:13px;
         border-radius:22px;
     }
 
     .hero{
-        padding:8px;
+        padding:4px;
+    }
+
+    .brand h1{
+        font-size:24px;
+    }
+
+    .logo{
+        width:45px;
+        height:45px;
+        border-radius:14px;
+        font-size:21px;
     }
 
     .hero h2{
+        margin-top:23px;
         font-size:43px;
-        letter-spacing:-2px;
+        letter-spacing:-3px;
+    }
+
+    .hero p{
+        margin-top:17px;
+        font-size:12px;
+    }
+
+    .features{
+        margin-top:15px;
+    }
+
+    .feature{
+        padding:7px 9px;
+        font-size:8px;
     }
 
     .join-card{
-        padding:17px;
+        padding:15px;
+        border-radius:19px;
+    }
+
+    .join-card h3{
+        font-size:21px;
     }
 
     .player-grid{
@@ -873,65 +1223,125 @@ button{
     }
 
     .lobby-card{
-        padding:17px;
+        padding:16px;
+        border-radius:22px;
     }
 
     .lobby-top{
         flex-direction:column;
     }
 
-    .game{
-        padding:5px;
-    }
-
-    .game-shell{
-        gap:5px;
-    }
-
-    .side{
-        border-radius:16px;
-    }
-
-    .board-wrap{
-        border-radius:16px;
-    }
-
-    .chat{
-        border-radius:16px;
-    }
-
-    .tools{
-        left:16px;
-        bottom:16px;
-        max-width:calc(100% - 32px);
-        overflow:auto;
-    }
-
-    .tool{
-        flex:none;
-    }
-
-    .topbar{
-        padding:8px;
-        gap:6px;
-    }
-
-    .word-box{
-        min-width:125px;
-    }
-
-    .round-label{
-        font-size:10px;
-    }
-
-    .timer{
-        min-width:45px;
-        font-size:16px;
+    .room-code{
+        align-self:flex-start;
     }
 }
 
-.hidden{
-    display:none !important;
+
+/* =========================
+   SHORT SCREEN
+========================= */
+
+@media(max-width:800px) and (max-height:650px){
+
+    .game-shell{
+        grid-template-rows:55px minmax(0,1fr) 92px;
+    }
+
+    .side{
+        height:55px;
+        min-height:55px;
+    }
+
+    .game-player{
+        height:45px;
+        min-width:110px;
+    }
+
+    .chat{
+        height:92px;
+        min-height:92px;
+        max-height:92px;
+    }
+
+    .chat-head{
+        display:none;
+    }
+}
+
+
+/* =========================
+   MOBILE LANDSCAPE
+========================= */
+
+@media(max-width:900px) and (orientation:landscape){
+
+    .game{
+        padding:4px;
+    }
+
+    .game-shell{
+        grid-template-columns:minmax(0,1fr);
+        grid-template-rows:45px minmax(0,1fr) 68px;
+    }
+
+    .side{
+        height:45px;
+        min-height:45px;
+        padding:3px 6px;
+    }
+
+    .game-player{
+        height:38px;
+        min-width:110px;
+    }
+
+    .game-player .p-avatar .avatar{
+        width:28px;
+        height:28px;
+    }
+
+    .board-wrap{
+        min-height:0;
+    }
+
+    .topbar{
+        height:42px;
+        min-height:42px;
+    }
+
+    .canvas-area{
+        padding:3px;
+    }
+
+    .chat{
+        height:68px;
+        min-height:68px;
+        max-height:68px;
+    }
+
+    .chat-head{
+        display:none;
+    }
+
+    .messages{
+        display:none;
+    }
+
+    .chat-input{
+        height:100%;
+        align-items:center;
+        padding:4px;
+    }
+
+    .chat-input input,
+    .chat-input button{
+        height:38px;
+    }
+
+    .tools{
+        left:5px;
+        bottom:5px;
+    }
 }
 </style>
 </head>
@@ -940,105 +1350,345 @@ button{
 
 <div class="app">
 
-<div class="bg">
-    <div class="blob one"></div>
-    <div class="blob two"></div>
-    <div class="blob three"></div>
+<div class="background">
+    <div class="blob a"></div>
+    <div class="blob b"></div>
+    <div class="blob c"></div>
 </div>
 
-<!-- HOME -->
 
-<section id="home" class="screen active home">
+<!-- ================= HOME ================= -->
 
-<div class="home-card">
+<section id="home" class="screen active">
 
-<div class="hero">
+    <div class="home-card">
 
-    <div class="brand">
-        <div class="logo">S</div>
-        <h1>Scribbl<span>ix</span></h1>
+        <div class="hero">
+
+            <div class="brand">
+                <div class="logo">S</div>
+                <h1>Scribbl<span>ix</span></h1>
+            </div>
+
+            <h2>
+                Draw it.<br>
+                <span>Guess it.</span>
+            </h2>
+
+            <p>
+                A fast multiplayer drawing game where one player draws,
+                everyone else guesses, and the best guessers climb the leaderboard.
+            </p>
+
+            <div class="features">
+                <div class="feature">2–8 PLAYERS</div>
+                <div class="feature">6 ROUNDS</div>
+                <div class="feature">LIVE DRAWING</div>
+                <div class="feature">QUICK JOIN</div>
+            </div>
+
+        </div>
+
+
+        <div class="join-card">
+
+            <h3>Ready to play?</h3>
+
+            <div class="sub">
+                Your CrazyGames name will be used when available.
+            </div>
+
+            <div class="name-preview">
+                <div id="previewAvatar" class="preview-avatar">S</div>
+
+                <div class="preview-info">
+                    <small>PLAYING AS</small>
+                    <strong id="previewName">Player</strong>
+                </div>
+            </div>
+
+            <div class="field">
+
+                <label>PLAYER NAME</label>
+
+                <input
+                    id="name"
+                    maxlength="18"
+                    autocomplete="off"
+                    placeholder="Enter your name"
+                >
+
+            </div>
+
+            <button id="quickJoin" class="primary quick">
+                QUICK JOIN
+            </button>
+
+            <div class="divider">OR</div>
+
+            <button id="createRoom" class="primary">
+                CREATE ROOM
+            </button>
+
+            <div class="join-row">
+
+                <input
+                    id="roomCode"
+                    class="join-code"
+                    maxlength="5"
+                    autocomplete="off"
+                    placeholder="ROOM CODE"
+                >
+
+                <button id="joinRoom" class="secondary">
+                    JOIN
+                </button>
+
+            </div>
+
+        </div>
+
     </div>
 
-    <h2>
-        Draw it.<br>
-        <span>Guess it.</span>
-    </h2>
+</section>
 
-    <p>
-        A fast multiplayer drawing party where one player
-        draws and everyone else races to guess the word.
-    </p>
 
-    <div class="mini-features">
-        <div class="pill">2–8 Players</div>
-        <div class="pill">Live Drawing</div>
-        <div class="pill">6 Rounds</div>
-        <div class="pill">Quick Join</div>
-    </div>
+<!-- ================= LOBBY ================= -->
 
-</div>
+<section id="lobby" class="screen">
 
-<div class="join-card">
+    <div class="lobby-card">
 
-    <h3>Ready to play?</h3>
+        <div class="lobby-top">
 
-    <div class="sub">
-        Your CrazyGames name will be used when available.
-    </div>
+            <div class="lobby-title">
+                <h2>Waiting room</h2>
+                <p>Share the room code or wait for another player.</p>
+            </div>
 
-    <div class="field">
+            <div id="lobbyCode" class="room-code">
+                -----
+            </div>
 
-        <label>PLAYER NAME</label>
+        </div>
 
-        <input
-            id="name"
-            maxlength="18"
-            placeholder="Your name"
-            autocomplete="off"
-        >
+        <div id="lobbyPlayers" class="player-grid"></div>
+
+        <div id="waitText" class="wait">
+            Waiting for another player...
+        </div>
 
     </div>
 
-    <button
-        id="quickJoin"
-        class="primary quick"
-    >
-        QUICK JOIN
-    </button>
+</section>
 
-    <div class="divider">OR</div>
 
-    <button
-        id="createRoom"
-        class="primary"
-    >
-        CREATE ROOM
-    </button>
+<!-- ================= GAME ================= -->
 
-    <div
-        class="join-row"
-        style="margin-top:10px;"
-    >
+<section id="game" class="screen">
 
-        <input
-            id="roomCode"
-            maxlength="5"
-            placeholder="ROOM CODE"
-            style="
-                height:49px;
-                border:1px solid var(--line);
-                border-radius:13px;
-                padding:0 13px;
-                outline:0;
-                text-transform:uppercase;
-            "
-        >
+    <div class="game-shell">
 
-        <button
-            id="joinRoom"
-            class="secondary"
-        >
-            JOIN
+
+        <!-- PLAYERS -->
+
+        <aside class="side">
+
+            <div class="side-title">
+
+                <h3>Players</h3>
+
+                <div id="playerCount" class="count">
+                    0/8
+                </div>
+
+            </div>
+
+            <div id="playerList" class="player-list"></div>
+
+        </aside>
+
+
+        <!-- BOARD -->
+
+        <main class="board-wrap">
+
+            <div class="topbar">
+
+                <div class="round-label">
+                    ROUND
+                    <strong id="round">1/6</strong>
+                </div>
+
+                <div class="word-box">
+
+                    <div id="wordLabel" class="word-label">
+                        DRAW THIS
+                    </div>
+
+                    <div id="word" class="word">
+                        Waiting...
+                    </div>
+
+                </div>
+
+                <div id="timer" class="timer">
+                    60
+                </div>
+
+            </div>
+
+
+            <div class="canvas-area">
+
+                <div class="canvas-box">
+
+                    <canvas id="canvas"></canvas>
+
+
+                    <div id="tools" class="tools hidden">
+
+                        <button
+                            class="tool selected"
+                            data-size="4"
+                            title="Small brush"
+                        >
+                            S
+                        </button>
+
+                        <button
+                            class="tool"
+                            data-size="9"
+                            title="Medium brush"
+                        >
+                            M
+                        </button>
+
+                        <button
+                            class="tool"
+                            data-size="16"
+                            title="Large brush"
+                        >
+                            L
+                        </button>
+
+                        <button
+                            class="tool"
+                            id="eraser"
+                            title="Eraser"
+                        >
+                            E
+                        </button>
+
+                        <button
+                            class="tool"
+                            id="clear"
+                            title="Clear board"
+                        >
+                            C
+                        </button>
+
+                        <button
+                            class="color"
+                            data-color="#111111"
+                            style="background:#111111"
+                            title="Black"
+                        ></button>
+
+                        <button
+                            class="color"
+                            data-color="#ef5350"
+                            style="background:#ef5350"
+                            title="Red"
+                        ></button>
+
+                        <button
+                            class="color"
+                            data-color="#3f6df6"
+                            style="background:#3f6df6"
+                            title="Blue"
+                        ></button>
+
+                        <button
+                            class="color"
+                            data-color="#24ad78"
+                            style="background:#24ad78"
+                            title="Green"
+                        ></button>
+
+                        <button
+                            class="color"
+                            data-color="#f3a51b"
+                            style="background:#f3a51b"
+                            title="Orange"
+                        ></button>
+
+                        <button
+                            class="color"
+                            data-color="#9b59e8"
+                            style="background:#9b59e8"
+                            title="Purple"
+                        ></button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </main>
+
+
+        <!-- CHAT -->
+
+        <aside class="chat">
+
+            <div class="chat-head">
+                <h3>Chat</h3>
+            </div>
+
+            <div id="messages" class="messages"></div>
+
+            <div class="chat-input">
+
+                <input
+                    id="chatInput"
+                    maxlength="100"
+                    autocomplete="off"
+                    placeholder="Type your guess..."
+                >
+
+                <button id="sendChat">
+                    →
+                </button>
+
+            </div>
+
+        </aside>
+
+    </div>
+
+</section>
+
+
+<!-- ================= RESULT ================= -->
+
+<div id="modal" class="modal">
+
+    <div class="modal-card">
+
+        <h2 id="modalTitle">
+            Game finished
+        </h2>
+
+        <div id="modalSub" class="modal-sub">
+            Final leaderboard
+        </div>
+
+        <div id="resultList" class="result-list"></div>
+
+        <button id="closeModal" class="primary">
+            CONTINUE
         </button>
 
     </div>
@@ -1047,852 +1697,272 @@ button{
 
 </div>
 
-</section>
-
-<!-- LOBBY -->
-
-<section id="lobby" class="screen lobby">
-
-<div class="lobby-card">
-
-    <div class="lobby-top">
-
-        <div class="lobby-title">
-
-            <h2>Waiting room</h2>
-
-            <p>
-                Players will automatically start when
-                2 or more are ready.
-            </p>
-
-        </div>
-
-        <div
-            id="lobbyCode"
-            class="room-code"
-        >
-            -----
-        </div>
-
-    </div>
-
-    <div
-        id="lobbyPlayers"
-        class="player-grid"
-    ></div>
-
-    <div
-        id="waitText"
-        class="wait"
-    >
-        Waiting for another player...
-    </div>
-
-</div>
-
-</section>
-
-<!-- GAME -->
-
-<section id="game" class="screen game">
-
-<div class="game-shell">
-
-    <aside class="side">
-
-        <div class="side-title">
-
-            <h3>Players</h3>
-
-            <div
-                id="playerCount"
-                class="count"
-            >
-                0/8
-            </div>
-
-        </div>
-
-        <div
-            id="playerList"
-            class="player-list"
-        ></div>
-
-    </aside>
-
-    <main class="board-wrap">
-
-        <div class="topbar">
-
-            <div class="round-label">
-                ROUND
-                <strong id="round">1/6</strong>
-            </div>
-
-            <div class="word-box">
-
-                <div
-                    id="wordLabel"
-                    class="word-label"
-                >
-                    DRAW THIS
-                </div>
-
-                <div
-                    id="word"
-                    class="word"
-                >
-                    Waiting...
-                </div>
-
-            </div>
-
-            <div
-                id="timer"
-                class="timer"
-            >
-                60
-            </div>
-
-        </div>
-
-        <div class="canvas-area">
-
-            <div class="canvas-box">
-
-                <canvas id="canvas"></canvas>
-
-                <div
-                    id="tools"
-                    class="tools hidden"
-                >
-
-                    <button
-                        class="tool selected"
-                        data-size="4"
-                    >
-                        S
-                    </button>
-
-                    <button
-                        class="tool"
-                        data-size="9"
-                    >
-                        M
-                    </button>
-
-                    <button
-                        class="tool"
-                        data-size="16"
-                    >
-                        L
-                    </button>
-
-                    <button
-                        class="tool"
-                        id="eraser"
-                    >
-                        E
-                    </button>
-
-                    <button
-                        class="tool"
-                        id="clear"
-                    >
-                        C
-                    </button>
-
-                    <button
-                        class="color"
-                        data-color="#111111"
-                        style="background:#111111"
-                    ></button>
-
-                    <button
-                        class="color"
-                        data-color="#ef5350"
-                        style="background:#ef5350"
-                    ></button>
-
-                    <button
-                        class="color"
-                        data-color="#3f6df6"
-                        style="background:#3f6df6"
-                    ></button>
-
-                    <button
-                        class="color"
-                        data-color="#24ad78"
-                        style="background:#24ad78"
-                    ></button>
-
-                    <button
-                        class="color"
-                        data-color="#f3a51b"
-                        style="background:#f3a51b"
-                    ></button>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </main>
-
-    <aside class="chat">
-
-        <div class="chat-head">
-            <h3>Chat</h3>
-        </div>
-
-        <div
-            id="messages"
-            class="messages"
-        ></div>
-
-        <div class="chat-input">
-
-            <input
-                id="chatInput"
-                maxlength="100"
-                placeholder="Type your guess..."
-                autocomplete="off"
-            >
-
-            <button id="sendChat">
-                →
-            </button>
-
-        </div>
-
-    </aside>
-
-</div>
-
-</section>
-
-<!-- RESULT -->
-
-<div
-    id="modal"
-    class="modal"
->
-
-<div class="modal-card">
-
-    <h2 id="modalTitle">
-        Round finished
-    </h2>
-
-    <p
-        id="modalSub"
-        style="
-            margin-top:6px;
-            color:var(--muted);
-            font-size:13px;
-        "
-    ></p>
-
-    <div
-        id="resultList"
-        class="result-list"
-    ></div>
-
-    <button
-        id="closeModal"
-        class="primary"
-        style="margin-top:18px;"
-    >
-        CONTINUE
-    </button>
-
-</div>
-
-</div>
-
-</div>
 
 <script>
 
-/* ======================================================
-   SOCKET.IO CONNECTION
-====================================================== */
+const SERVER_URL = "https://scribblix-server.onrender.com";
 
-const socket = io(
-    "https://scribblix-server.onrender.com",
-    {
-        transports:[
-            "websocket",
-            "polling"
-        ]
-    }
-);
+const socket = io(SERVER_URL,{
+    transports:["websocket","polling"]
+});
+
+
+/* =========================
+   STATE
+========================= */
 
 let myId = null;
-let myName = "";
+let crazyGamesName = "";
+
 let roomCode = "";
 let currentState = null;
-let secretWord = "";
+
+let canvas = null;
+let ctx = null;
 
 let drawing = false;
-let lastX = 0;
-let lastY = 0;
+let lastPoint = null;
 
 let brushSize = 4;
 let brushColor = "#111111";
 let erasing = false;
 
-let canvas;
-let ctx;
 
-let cssWidth = 0;
-let cssHeight = 0;
-let pixelRatio = 1;
+/* =========================
+   ELEMENTS
+========================= */
 
-const $ = id =>
-    document.getElementById(id);
+const $ = id => document.getElementById(id);
+
+const home = $("home");
+const lobby = $("lobby");
+const game = $("game");
+
+const nameInput = $("name");
+const roomInput = $("roomCode");
+
+const previewName = $("previewName");
+const previewAvatar = $("previewAvatar");
+
+const lobbyCode = $("lobbyCode");
+const lobbyPlayers = $("lobbyPlayers");
+const waitText = $("waitText");
+
+const playerList = $("playerList");
+const playerCount = $("playerCount");
+
+const roundEl = $("round");
+const timerEl = $("timer");
+
+const wordLabel = $("wordLabel");
+const wordEl = $("word");
+
+const tools = $("tools");
+
+const messages = $("messages");
+const chatInput = $("chatInput");
+
+const modal = $("modal");
+const modalTitle = $("modalTitle");
+const modalSub = $("modalSub");
+const resultList = $("resultList");
 
 
-/* ======================================================
-   SCREEN
-====================================================== */
+/* =========================
+   HELPERS
+========================= */
+
+function escapeHTML(value){
+
+    return String(value)
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+}
+
+
+function getName(){
+
+    const typed = nameInput.value.trim();
+
+    return (
+        typed ||
+        crazyGamesName ||
+        "Player"
+    ).slice(0,18);
+}
+
 
 function showScreen(id){
 
-    document
-        .querySelectorAll(".screen")
-        .forEach(screen =>
-            screen.classList.remove("active")
-        );
+    document.querySelectorAll(".screen")
+        .forEach(screen=>{
+            screen.classList.remove("active");
+        });
 
     $(id).classList.add("active");
 
     if(id === "game"){
-
-        requestAnimationFrame(() => {
+        requestAnimationFrame(()=>{
             resizeCanvas(false);
         });
-
     }
 }
 
 
-/* ======================================================
-   MESSAGES
-====================================================== */
+/* =========================
+   PROFILE PREVIEW
+========================= */
 
-function addMessage(
-    text,
-    type = ""
-){
+function updatePreview(){
 
-    const el =
-        document.createElement("div");
+    const n = getName();
 
-    el.className =
-        `msg ${type}`;
+    previewName.textContent = n;
 
-    el.innerHTML =
-        text;
-
-    $("messages")
-        .appendChild(el);
-
-    $("messages").scrollTop =
-        $("messages").scrollHeight;
+    previewAvatar.textContent =
+        n.charAt(0).toUpperCase() || "S";
 }
 
-
-function escapeHTML(text){
-
-    return String(text)
-        .replaceAll("&","&amp;")
-        .replaceAll("<","&lt;")
-        .replaceAll(">","&gt;")
-        .replaceAll('"',"&quot;")
-        .replaceAll("'","&#039;");
-}
+nameInput.addEventListener("input",updatePreview);
 
 
-/* ======================================================
+/* =========================
    CRAZYGAMES USER
-====================================================== */
+========================= */
 
 async function loadCrazyGamesUser(){
 
     try{
 
         if(
-            !window.CrazyGames ||
-            !window.CrazyGames.SDK
+            window.CrazyGames &&
+            window.CrazyGames.SDK
         ){
-            return;
-        }
 
-        await window.CrazyGames.SDK.init();
+            await window.CrazyGames.SDK.init();
 
-        const user =
-            await window.CrazyGames.SDK.user.getUser();
+            const user =
+                await window.CrazyGames.SDK.user.getUser();
 
-        if(user){
+            if(user){
 
-            const possibleName =
-                user.username ||
-                user.displayName ||
-                user.name;
+                crazyGamesName =
+                    user.username ||
+                    user.displayName ||
+                    user.name ||
+                    "";
 
-            if(
-                possibleName &&
-                typeof possibleName === "string"
-            ){
+                if(
+                    crazyGamesName &&
+                    !nameInput.value.trim()
+                ){
+                    nameInput.value =
+                        crazyGamesName.slice(0,18);
+                }
 
-                myName =
-                    possibleName
-                        .trim()
-                        .slice(0,18);
-
-                $("name").value =
-                    myName;
+                updatePreview();
             }
         }
 
     }catch(error){
 
         console.log(
-            "CrazyGames user unavailable:",
+            "CrazyGames user unavailable",
             error
         );
 
     }
+
 }
 
 
-/* ======================================================
-   SOCKET EVENTS
-====================================================== */
-
-socket.on(
-    "connect",
-    () => {
-
-        myId =
-            socket.id;
-
-        console.log(
-            "Connected to Scribblix server:",
-            myId
-        );
-
-        loadCrazyGamesUser();
-    }
-);
-
-
-socket.on(
-    "connect_error",
-    error => {
-
-        console.error(
-            "Scribblix connection error:",
-            error
-        );
-
-    }
-);
-
-
-socket.on(
-    "roomCreated",
-    data => {
-
-        roomCode =
-            data.code;
-
-        $("lobbyCode")
-            .textContent =
-            roomCode;
-
-        showScreen("lobby");
-    }
-);
-
-
-socket.on(
-    "joinedRoom",
-    data => {
-
-        roomCode =
-            data.code;
-
-        $("lobbyCode")
-            .textContent =
-            roomCode;
-
-        showScreen("lobby");
-    }
-);
-
-
-socket.on(
-    "roomState",
-    state => {
-
-        currentState =
-            state;
-
-        roomCode =
-            state.code;
-
-        renderPlayers(
-            state.players,
-            state.drawerId
-        );
-
-        $("round").textContent =
-            `${state.round || 0}/${state.totalRounds}`;
-
-        $("timer").textContent =
-            state.timeLeft || 0;
-
-        $("playerCount").textContent =
-            `${state.players.length}/8`;
-
-        if(state.gameStarted){
-
-            showScreen("game");
-
-            updateDrawerUI(
-                state.drawerId
-            );
-
-            requestAnimationFrame(() => {
-                resizeCanvas(false);
-            });
-
-        }else{
-
-            if(state.players.length > 0){
-
-                $("lobbyCode")
-                    .textContent =
-                    state.code;
-
-                renderLobby(
-                    state.players
-                );
-
-                showScreen("lobby");
-            }
-        }
-    }
-);
-
-
-socket.on(
-    "roundStarted",
-    data => {
-
-        secretWord = "";
-
-        $("wordLabel")
-            .textContent =
-            "DRAW THIS";
-
-        $("word")
-            .textContent =
-            "Loading...";
-
-        $("round").textContent =
-            `${data.round}/${data.totalRounds}`;
-
-        $("timer").textContent =
-            data.timeLeft;
-
-        clearCanvas();
-
-        updateDrawerUI(
-            data.drawerId
-        );
-    }
-);
-
-
-/* ======================================================
-   SECRET WORD
-====================================================== */
-
-socket.on(
-    "secretWord",
-    data => {
-
-        secretWord =
-            data.word || "";
-
-        $("wordLabel")
-            .textContent =
-            "YOUR WORD";
-
-        $("word")
-            .textContent =
-            secretWord || "—";
-
-        $("word").style.letterSpacing =
-            "0";
-    }
-);
-
-
-/* ======================================================
-   TIMER
-====================================================== */
-
-socket.on(
-    "timer",
-    time => {
-
-        $("timer").textContent =
-            Math.max(0,time);
-
-        if(time <= 10){
-
-            $("timer").style.color =
-                "#ef6262";
-
-        }else{
-
-            $("timer").style.color =
-                "var(--text)";
-        }
-    }
-);
-
-
-/* ======================================================
-   ROUND END
-====================================================== */
-
-socket.on(
-    "roundEnded",
-    data => {
-
-        $("wordLabel")
-            .textContent =
-            "ANSWER";
-
-        $("word")
-            .textContent =
-            data.word || "—";
-
-        $("tools")
-            .classList
-            .add("hidden");
-
-        addMessage(
-            `The word was <strong>${escapeHTML(data.word)}</strong>.`,
-            "system"
-        );
-    }
-);
-
-
-/* ======================================================
-   GAME FINISHED
-====================================================== */
-
-socket.on(
-    "gameFinished",
-    data => {
-
-        renderResults(
-            data.leaderboard || []
-        );
-
-        $("modalTitle")
-            .textContent =
-            "Game complete";
-
-        $("modalSub")
-            .textContent =
-            "Final leaderboard";
-
-        $("modal")
-            .classList
-            .add("show");
-
-        $("tools")
-            .classList
-            .add("hidden");
-    }
-);
-
-
-/* ======================================================
-   CHAT
-====================================================== */
-
-socket.on(
-    "chatMessage",
-    data => {
-
-        addMessage(
-            `<strong>${escapeHTML(data.playerName)}</strong>: ${escapeHTML(data.message)}`
-        );
-    }
-);
-
-
-socket.on(
-    "systemMessage",
-    data => {
-
-        addMessage(
-            escapeHTML(data.message),
-            "system"
-        );
-    }
-);
-
-
-socket.on(
-    "correctGuess",
-    data => {
-
-        addMessage(
-            `<strong>${escapeHTML(data.playerName)}</strong> guessed correctly! +${data.points}`,
-            "correct"
-        );
-    }
-);
-
-
-socket.on(
-    "errorMessage",
-    message => {
-
-        alert(message);
-    }
-);
-
-
-/* ======================================================
-   DRAW EVENTS
-====================================================== */
-
-socket.on(
-    "draw",
-    data => {
-
-        drawRemote(data);
-    }
-);
-
-
-socket.on(
-    "clearBoard",
-    () => {
-
-        clearCanvas();
-    }
-);
-
-
-/* ======================================================
-   PLAYER UI
-====================================================== */
+/* =========================
+   AVATAR
+========================= */
 
 function avatarHTML(avatar){
 
-    if(!avatar){
-
-        return `
-            <div
-                class="avatar"
-                style="
-                    background:#eef0f5;
-                    color:#6d7482;
-                "
-            >?</div>
-        `;
-    }
+    const bg = avatar?.bg || "#e7e4ff";
+    const fg = avatar?.fg || "#6858e8";
 
     return `
         <div
             class="avatar"
-            style="
-                background:${avatar.bg};
-                color:${avatar.fg};
-            "
-        >${avatar.mark}</div>
+            style="background:${escapeHTML(bg)}"
+        >
+            <div class="head"></div>
+
+            <div
+                class="hair"
+                style="background:${escapeHTML(fg)}"
+            ></div>
+
+            <div
+                class="body"
+                style="background:${escapeHTML(fg)}"
+            ></div>
+
+            <div class="eye e1"></div>
+            <div class="eye e2"></div>
+        </div>
     `;
 }
 
 
-function renderLobby(players){
+/* =========================
+   LOBBY PLAYERS
+========================= */
 
-    $("lobbyPlayers").innerHTML =
-        players.map(player => {
+function renderLobbyPlayers(players){
 
-            return `
-                <div class="player-slot">
+    lobbyPlayers.innerHTML = players.map(player=>{
 
-                    ${avatarHTML(player.avatar)}
+        return `
+            <div class="player-slot">
 
-                    <div class="name">
-                        ${escapeHTML(player.name)}
-                    </div>
+                ${avatarHTML(player.avatar)}
 
+                <div class="name">
+                    ${escapeHTML(player.name)}
                 </div>
-            `;
 
-        }).join("");
+            </div>
+        `;
 
-    $("waitText").textContent =
-        players.length >= 2
-            ? "Starting game..."
-            : "Waiting for another player...";
+    }).join("");
+
+    waitText.textContent =
+        players.length < 2
+            ? "Waiting for another player..."
+            : "Starting game...";
 }
 
 
-function renderPlayers(
-    players,
-    drawerId
-){
+/* =========================
+   GAME PLAYERS
+========================= */
 
-    $("playerList").innerHTML =
-        players.map(player => {
+function renderPlayers(players){
 
-            const isDrawer =
-                player.id === drawerId;
+    playerCount.textContent =
+        `${players.length}/8`;
+
+    playerList.innerHTML =
+        players.map(player=>{
+
+            const drawer =
+                player.id === currentState?.drawerId;
 
             return `
                 <div
-                    class="game-player ${
-                        isDrawer
-                            ? "active-drawer"
-                            : ""
-                    }"
+                    class="game-player ${drawer ? "active-drawer" : ""}"
                 >
 
-                    <div
-                        class="p-avatar"
-                        style="
-                            background:${
-                                player.avatar?.bg ||
-                                "#eef0f5"
-                            };
-
-                            color:${
-                                player.avatar?.fg ||
-                                "#687184"
-                            };
-                        "
-                    >
-                        ${
-                            player.avatar?.mark ||
-                            "?"
-                        }
+                    <div class="p-avatar">
+                        ${avatarHTML(player.avatar)}
                     </div>
 
                     <div class="p-info">
@@ -1908,9 +1978,9 @@ function renderPlayers(
                     </div>
 
                     ${
-                        isDrawer
-                            ? `<div class="turn-badge">DRAWING</div>`
-                            : ""
+                        drawer
+                        ? `<div class="turn-badge">DRAWING</div>`
+                        : ""
                     }
 
                 </div>
@@ -1920,86 +1990,345 @@ function renderPlayers(
 }
 
 
-/* ======================================================
+/* =========================
    DRAWER UI
-====================================================== */
+========================= */
 
-function updateDrawerUI(
-    drawerId
-){
+function updateDrawerUI(){
 
-    const amDrawer =
-        drawerId === myId;
+    if(!currentState){
 
-    if(amDrawer){
-
-        $("tools")
-            .classList
-            .remove("hidden");
-
-        if(secretWord){
-
-            $("wordLabel")
-                .textContent =
-                "YOUR WORD";
-
-            $("word")
-                .textContent =
-                secretWord;
-
-        }else{
-
-            $("wordLabel")
-                .textContent =
-                "YOUR WORD";
-
-            $("word")
-                .textContent =
-                "Loading...";
-        }
-
-    }else{
-
-        $("tools")
-            .classList
-            .add("hidden");
-
-        $("wordLabel")
-            .textContent =
-            "DRAW THIS";
-
-        $("word")
-            .textContent =
-            "Guess the word";
+        tools.classList.add("hidden");
+        return;
     }
+
+    const isDrawer =
+        currentState.drawerId === myId;
+
+    tools.classList.toggle(
+        "hidden",
+        !isDrawer
+    );
 }
 
 
-/* ======================================================
+/* =========================
+   MESSAGES
+========================= */
+
+function addMessage(text,type=""){
+
+    const div =
+        document.createElement("div");
+
+    div.className =
+        `msg ${type}`;
+
+    div.innerHTML = text;
+
+    messages.appendChild(div);
+
+    messages.scrollTop =
+        messages.scrollHeight;
+}
+
+
+function addSystem(text){
+
+    addMessage(
+        escapeHTML(text),
+        "system"
+    );
+
+}
+
+
+/* =========================
+   SOCKET
+========================= */
+
+socket.on("connect",()=>{
+
+    myId = socket.id;
+
+    loadCrazyGamesUser();
+
+});
+
+
+socket.on("connect_error",error=>{
+
+    console.log(
+        "Socket connection error:",
+        error
+    );
+
+});
+
+
+socket.on("roomCreated",data=>{
+
+    roomCode =
+        String(data.code || "")
+        .toUpperCase();
+
+    lobbyCode.textContent =
+        roomCode;
+
+    showScreen("lobby");
+
+});
+
+
+socket.on("joinedRoom",data=>{
+
+    roomCode =
+        String(data.code || roomCode)
+        .toUpperCase();
+
+    lobbyCode.textContent =
+        roomCode;
+
+    showScreen("lobby");
+
+});
+
+
+socket.on("roomState",state=>{
+
+    currentState = state;
+
+    roomCode = state.code;
+
+    lobbyCode.textContent =
+        state.code;
+
+    roundEl.textContent =
+        `${state.round || 1}/${state.totalRounds || 6}`;
+
+    timerEl.textContent =
+        state.timeLeft ?? 0;
+
+    renderLobbyPlayers(
+        state.players || []
+    );
+
+    renderPlayers(
+        state.players || []
+    );
+
+    if(state.gameStarted){
+
+        showScreen("game");
+
+        updateDrawerUI();
+
+    }else{
+
+        if(
+            modal.classList.contains("show")
+        ){
+            return;
+        }
+
+        showScreen("lobby");
+
+        tools.classList.add("hidden");
+    }
+
+});
+
+
+/* =========================
+   ROUND
+========================= */
+
+socket.on("roundStarted",data=>{
+
+    wordLabel.textContent =
+        "DRAW THIS";
+
+    wordEl.textContent =
+        "Loading...";
+
+    roundEl.textContent =
+        `${data.round}/${data.totalRounds}`;
+
+    timerEl.textContent =
+        data.timeLeft;
+
+    timerEl.classList.remove("danger");
+
+    clearCanvas();
+
+    if(currentState){
+
+        currentState.drawerId =
+            data.drawerId;
+
+        currentState.round =
+            data.round;
+
+        currentState.timeLeft =
+            data.timeLeft;
+
+    }
+
+    updateDrawerUI();
+
+});
+
+
+socket.on("secretWord",data=>{
+
+    wordLabel.textContent =
+        "YOUR WORD";
+
+    wordEl.textContent =
+        data.word || "Draw this";
+
+});
+
+
+socket.on("timer",time=>{
+
+    timerEl.textContent =
+        time;
+
+    timerEl.classList.toggle(
+        "danger",
+        time <= 10
+    );
+
+    if(currentState){
+
+        currentState.timeLeft =
+            time;
+    }
+
+});
+
+
+socket.on("roundEnded",data=>{
+
+    wordLabel.textContent =
+        "ANSWER";
+
+    wordEl.textContent =
+        data.word || "Unknown";
+
+    tools.classList.add("hidden");
+
+    addSystem(
+        `Round finished. Answer: ${escapeHTML(data.word || "unknown")}`
+    );
+
+});
+
+
+socket.on("gameFinished",data=>{
+
+    tools.classList.add("hidden");
+
+    renderResults(
+        data.leaderboard || []
+    );
+
+    modal.classList.add("show");
+
+});
+
+
+/* =========================
+   CHAT
+========================= */
+
+socket.on("chatMessage",data=>{
+
+    addMessage(
+        `<strong>${escapeHTML(data.playerName)}</strong>: ${escapeHTML(data.message)}`
+    );
+
+});
+
+
+socket.on("systemMessage",data=>{
+
+    addSystem(
+        data.message || ""
+    );
+
+});
+
+
+socket.on("correctGuess",data=>{
+
+    addMessage(
+        `<strong>${escapeHTML(data.playerName)}</strong> guessed correctly! +${Number(data.points) || 0}`,
+        "correct"
+    );
+
+});
+
+
+socket.on("errorMessage",message=>{
+
+    alert(message);
+
+});
+
+
+/* =========================
+   RESULTS
+========================= */
+
+function renderResults(players){
+
+    resultList.innerHTML =
+        players.map(player=>{
+
+            return `
+                <div class="result-row">
+
+                    <div class="rank">
+                        #${player.position}
+                    </div>
+
+                    <div class="result-avatar">
+                        ${avatarHTML(player.avatar)}
+                    </div>
+
+                    <div class="result-name">
+                        ${escapeHTML(player.name)}
+                    </div>
+
+                    <div class="result-score">
+                        ${player.score} pts
+                    </div>
+
+                </div>
+            `;
+
+        }).join("");
+
+}
+
+
+/* =========================
    CANVAS
-====================================================== */
+========================= */
 
 function initCanvas(){
 
-    canvas =
-        $("canvas");
+    canvas = $("canvas");
 
     ctx =
-        canvas.getContext("2d");
+        canvas.getContext("2d",{
+            alpha:false
+        });
 
-    resizeCanvas(true);
+    resizeCanvas(false);
 
-    window.addEventListener(
-        "resize",
-        () => {
-
-            requestAnimationFrame(
-                () =>
-                    resizeCanvas(false)
-            );
-
-        }
-    );
 
     canvas.addEventListener(
         "pointerdown",
@@ -2025,61 +2354,84 @@ function initCanvas(){
         "pointerleave",
         stopDrawing
     );
+
+    window.addEventListener(
+        "resize",
+        ()=>{
+            requestAnimationFrame(()=>{
+                resizeCanvas(false);
+            });
+        }
+    );
+
+    window.addEventListener(
+        "orientationchange",
+        ()=>{
+            setTimeout(()=>{
+                resizeCanvas(false);
+            },120);
+        }
+    );
+
+    if(window.visualViewport){
+
+        window.visualViewport.addEventListener(
+            "resize",
+            ()=>{
+                requestAnimationFrame(()=>{
+                    resizeCanvas(false);
+                });
+            }
+        );
+
+    }
+
 }
 
 
-function resizeCanvas(force){
+function resizeCanvas(clear=false){
 
-    if(!canvas || !ctx)
+    if(!canvas || !ctx){
         return;
+    }
 
     const rect =
         canvas.getBoundingClientRect();
 
-    const newWidth =
+    const width =
         Math.max(
             1,
-            Math.round(rect.width)
+            Math.floor(rect.width)
         );
 
-    const newHeight =
+    const height =
         Math.max(
             1,
-            Math.round(rect.height)
+            Math.floor(rect.height)
         );
 
-    const newRatio =
-        Math.min(
-            window.devicePixelRatio || 1,
-            2
-        );
+    const oldWidth =
+        canvas.width;
+
+    const oldHeight =
+        canvas.height;
+
+    let oldCanvas = null;
 
     if(
-        !force &&
-        newWidth === cssWidth &&
-        newHeight === cssHeight &&
-        newRatio === pixelRatio
+        !clear &&
+        oldWidth > 0 &&
+        oldHeight > 0
     ){
-        return;
-    }
 
-    const oldCanvas =
-        document.createElement("canvas");
-
-    let hadDrawing = false;
-
-    if(
-        canvas.width > 0 &&
-        canvas.height > 0 &&
-        cssWidth > 0 &&
-        cssHeight > 0
-    ){
+        oldCanvas =
+            document.createElement("canvas");
 
         oldCanvas.width =
-            canvas.width;
+            oldWidth;
 
         oldCanvas.height =
-            canvas.height;
+            oldHeight;
 
         const oldCtx =
             oldCanvas.getContext("2d");
@@ -2089,58 +2441,40 @@ function resizeCanvas(force){
             0,
             0
         );
-
-        hadDrawing = true;
     }
 
-    const oldCssWidth =
-        cssWidth;
-
-    const oldCssHeight =
-        cssHeight;
-
-    cssWidth =
-        newWidth;
-
-    cssHeight =
-        newHeight;
-
-    pixelRatio =
-        newRatio;
+    const dpr =
+        Math.min(
+            window.devicePixelRatio || 1,
+            2
+        );
 
     canvas.width =
-        Math.round(
-            cssWidth * pixelRatio
-        );
+        Math.floor(width * dpr);
 
     canvas.height =
-        Math.round(
-            cssHeight * pixelRatio
-        );
-
-    ctx =
-        canvas.getContext("2d");
+        Math.floor(height * dpr);
 
     ctx.setTransform(
-        pixelRatio,
+        dpr,
         0,
         0,
-        pixelRatio,
+        dpr,
         0,
         0
     );
 
-    ctx.lineCap =
-        "round";
+    ctx.fillStyle =
+        "#ffffff";
 
-    ctx.lineJoin =
-        "round";
+    ctx.fillRect(
+        0,
+        0,
+        width,
+        height
+    );
 
-    if(
-        hadDrawing &&
-        oldCssWidth > 0 &&
-        oldCssHeight > 0
-    ){
+    if(oldCanvas){
 
         ctx.drawImage(
             oldCanvas,
@@ -2150,10 +2484,12 @@ function resizeCanvas(force){
             oldCanvas.height,
             0,
             0,
-            cssWidth,
-            cssHeight
+            width,
+            height
         );
+
     }
+
 }
 
 
@@ -2163,23 +2499,57 @@ function getPoint(event){
         canvas.getBoundingClientRect();
 
     return {
+
         x:
-            (event.clientX - rect.left) /
-            rect.width,
+            Math.max(
+                0,
+                Math.min(
+                    1,
+                    (event.clientX - rect.left) /
+                    rect.width
+                )
+            ),
 
         y:
-            (event.clientY - rect.top) /
-            rect.height
+            Math.max(
+                0,
+                Math.min(
+                    1,
+                    (event.clientY - rect.top) /
+                    rect.height
+                )
+            )
+
     };
+
 }
 
 
 function drawLocalLine(
-    x,
-    y,
-    px,
-    py
+    x1,
+    y1,
+    x2,
+    y2,
+    color,
+    size,
+    erase=false
 ){
+
+    const rect =
+        canvas.getBoundingClientRect();
+
+    const x =
+        x1 * rect.width;
+
+    const y =
+        y1 * rect.height;
+
+    const px =
+        x2 * rect.width;
+
+    const py =
+        y2 * rect.height;
+
 
     ctx.save();
 
@@ -2189,13 +2559,13 @@ function drawLocalLine(
     ctx.lineJoin =
         "round";
 
-    if(erasing){
+    ctx.lineWidth =
+        size;
+
+    if(erase){
 
         ctx.globalCompositeOperation =
             "destination-out";
-
-        ctx.strokeStyle =
-            "rgba(0,0,0,1)";
 
     }else{
 
@@ -2203,27 +2573,42 @@ function drawLocalLine(
             "source-over";
 
         ctx.strokeStyle =
-            brushColor;
+            color;
     }
 
-    ctx.lineWidth =
-        brushSize;
 
     ctx.beginPath();
 
-    ctx.moveTo(
-        px * cssWidth,
-        py * cssHeight
-    );
+    if(
+        Math.abs(x-px) < .1 &&
+        Math.abs(y-py) < .1
+    ){
 
-    ctx.lineTo(
-        x * cssWidth,
-        y * cssHeight
-    );
+        ctx.arc(
+            x,
+            y,
+            size/2,
+            0,
+            Math.PI*2
+        );
 
-    ctx.stroke();
+        ctx.fillStyle =
+            erase
+            ? "rgba(0,0,0,1)"
+            : color;
+
+        ctx.fill();
+
+    }else{
+
+        ctx.moveTo(x,y);
+        ctx.lineTo(px,py);
+        ctx.stroke();
+
+    }
 
     ctx.restore();
+
 }
 
 
@@ -2236,44 +2621,54 @@ function startDrawing(event){
         return;
     }
 
-    drawing =
-        true;
+    event.preventDefault();
 
-    canvas.setPointerCapture(
+    drawing = true;
+
+    canvas.setPointerCapture?.(
         event.pointerId
     );
 
-    const point =
+    lastPoint =
         getPoint(event);
 
-    lastX =
-        point.x;
-
-    lastY =
-        point.y;
-
     drawLocalLine(
-        point.x,
-        point.y,
-        point.x,
-        point.y
+        lastPoint.x,
+        lastPoint.y,
+        lastPoint.x,
+        lastPoint.y,
+        brushColor,
+        brushSize,
+        erasing
     );
+
 }
 
 
 function moveDrawing(event){
 
-    if(!drawing)
+    if(!drawing){
         return;
+    }
+
+    event.preventDefault();
 
     const point =
         getPoint(event);
 
+    if(!lastPoint){
+        lastPoint = point;
+        return;
+    }
+
     drawLocalLine(
+        lastPoint.x,
+        lastPoint.y,
         point.x,
         point.y,
-        lastX,
-        lastY
+        brushColor,
+        brushSize,
+        erasing
     );
 
     socket.emit(
@@ -2281,417 +2676,453 @@ function moveDrawing(event){
         {
             x:point.x,
             y:point.y,
-            px:lastX,
-            py:lastY,
+            px:lastPoint.x,
+            py:lastPoint.y,
             color:brushColor,
             size:brushSize,
             erase:erasing
         }
     );
 
-    lastX =
-        point.x;
+    lastPoint =
+        point;
 
-    lastY =
-        point.y;
 }
 
 
-function stopDrawing(){
+function stopDrawing(event){
 
-    drawing =
-        false;
+    drawing = false;
+
+    lastPoint = null;
+
+    try{
+
+        canvas.releasePointerCapture?.(
+            event.pointerId
+        );
+
+    }catch(_){}
+
 }
 
 
 function drawRemote(data){
 
-    if(!ctx)
-        return;
-
-    ctx.save();
-
-    if(data.erase){
-
-        ctx.globalCompositeOperation =
-            "destination-out";
-
-        ctx.strokeStyle =
-            "rgba(0,0,0,1)";
-
-    }else{
-
-        ctx.globalCompositeOperation =
-            "source-over";
-
-        ctx.strokeStyle =
-            data.color ||
-            "#111111";
-    }
-
-    ctx.lineWidth =
-        Math.max(
-            1,
-            Number(data.size) || 4
-        );
-
-    ctx.lineCap =
-        "round";
-
-    ctx.lineJoin =
-        "round";
-
-    ctx.beginPath();
-
-    ctx.moveTo(
-        data.px * cssWidth,
-        data.py * cssHeight
+    drawLocalLine(
+        Number(data.px) || 0,
+        Number(data.py) || 0,
+        Number(data.x) || 0,
+        Number(data.y) || 0,
+        typeof data.color === "string"
+            ? data.color
+            : "#111111",
+        Math.min(
+            Math.max(
+                Number(data.size) || 4,
+                1
+            ),
+            30
+        ),
+        Boolean(data.erase)
     );
 
-    ctx.lineTo(
-        data.x * cssWidth,
-        data.y * cssHeight
-    );
-
-    ctx.stroke();
-
-    ctx.restore();
 }
 
 
 function clearCanvas(){
 
-    if(!canvas || !ctx)
+    if(!canvas || !ctx){
         return;
+    }
 
-    ctx.save();
+    const rect =
+        canvas.getBoundingClientRect();
+
+    const dpr =
+        Math.min(
+            window.devicePixelRatio || 1,
+            2
+        );
 
     ctx.setTransform(
-        pixelRatio,
+        dpr,
         0,
         0,
-        pixelRatio,
+        dpr,
         0,
         0
     );
 
-    ctx.clearRect(
+    ctx.globalCompositeOperation =
+        "source-over";
+
+    ctx.fillStyle =
+        "#ffffff";
+
+    ctx.fillRect(
         0,
         0,
-        cssWidth,
-        cssHeight
+        rect.width,
+        rect.height
     );
 
-    ctx.restore();
 }
 
 
-/* ======================================================
+/* =========================
+   DRAW SOCKET
+========================= */
+
+socket.on("draw",data=>{
+
+    drawRemote(data);
+
+});
+
+
+socket.on("clearBoard",()=>{
+
+    clearCanvas();
+
+});
+
+
+/* =========================
    TOOLS
-====================================================== */
+========================= */
 
 document
-    .querySelectorAll(
-        ".tool[data-size]"
-    )
-    .forEach(button => {
+.querySelectorAll(".tool[data-size]")
+.forEach(button=>{
 
-        button.onclick = () => {
+    button.addEventListener(
+        "click",
+        ()=>{
 
             brushSize =
-                Number(
-                    button.dataset.size
-                );
+                Number(button.dataset.size) || 4;
 
-            erasing =
-                false;
+            erasing = false;
 
             document
-                .querySelectorAll(
-                    ".tool"
-                )
-                .forEach(
-                    x =>
-                        x.classList
-                            .remove("selected")
+            .querySelectorAll(".tool")
+            .forEach(tool=>{
+                tool.classList.remove(
+                    "selected"
                 );
+            });
 
-            button.classList
-                .add("selected");
-        };
-    });
+            button.classList.add(
+                "selected"
+            );
+
+        }
+    );
+
+});
 
 
-$("eraser").onclick = () => {
+$("eraser").addEventListener(
+    "click",
+    ()=>{
 
-    erasing =
-        true;
+        erasing = true;
 
-    document
-        .querySelectorAll(
-            ".tool"
-        )
-        .forEach(
-            x =>
-                x.classList
-                    .remove("selected")
+        document
+        .querySelectorAll(".tool")
+        .forEach(tool=>{
+            tool.classList.remove(
+                "selected"
+            );
+        });
+
+        $("eraser").classList.add(
+            "selected"
         );
 
-    $("eraser")
-        .classList
-        .add("selected");
-};
+    }
+);
 
 
-$("clear").onclick = () => {
+$("clear").addEventListener(
+    "click",
+    ()=>{
 
-    if(
-        currentState &&
-        currentState.drawerId === myId
-    ){
+        if(
+            !currentState ||
+            currentState.drawerId !== myId
+        ){
+            return;
+        }
 
         clearCanvas();
 
         socket.emit(
             "clearBoard"
         );
+
     }
-};
+);
 
 
 document
-    .querySelectorAll(
-        ".color"
-    )
-    .forEach(button => {
+.querySelectorAll(".color")
+.forEach(button=>{
 
-        button.onclick = () => {
+    button.addEventListener(
+        "click",
+        ()=>{
 
             brushColor =
-                button.dataset.color;
+                button.dataset.color ||
+                "#111111";
 
-            erasing =
-                false;
+            erasing = false;
 
             document
-                .querySelectorAll(
-                    ".tool"
-                )
-                .forEach(
-                    x =>
-                        x.classList
-                            .remove("selected")
+            .querySelectorAll(".tool")
+            .forEach(tool=>{
+                tool.classList.remove(
+                    "selected"
                 );
-        };
-    });
+            });
+
+            const small =
+                document.querySelector(
+                    '.tool[data-size="4"]'
+                );
+
+            small?.classList.add(
+                "selected"
+            );
+
+        }
+    );
+
+});
 
 
-/* ======================================================
+/* =========================
    CHAT
-====================================================== */
+========================= */
 
 function sendChat(){
 
-    const input =
-        $("chatInput");
-
     const message =
-        input.value.trim();
+        chatInput.value.trim();
 
-    if(!message)
+    if(!message){
         return;
+    }
 
     socket.emit(
         "chat",
         {
-            message
+            message:message.slice(0,100)
         }
     );
 
-    input.value =
-        "";
+    chatInput.value = "";
+
+    chatInput.focus();
+
 }
 
 
-$("sendChat").onclick =
-    sendChat;
+$("sendChat").addEventListener(
+    "click",
+    sendChat
+);
 
 
-$("chatInput").addEventListener(
+chatInput.addEventListener(
     "keydown",
-    event => {
+    event=>{
 
-        if(
-            event.key === "Enter"
-        ){
+        if(event.key === "Enter"){
+
+            event.preventDefault();
 
             sendChat();
+
         }
+
     }
 );
 
 
-/* ======================================================
+/* =========================
    HOME BUTTONS
-====================================================== */
+========================= */
 
-function getName(){
+$("createRoom").addEventListener(
+    "click",
+    ()=>{
 
-    const entered =
-        $("name")
-            .value
-            .trim();
+        socket.emit(
+            "createRoom",
+            {
+                name:getName()
+            }
+        );
 
-    if(entered){
-
-        myName =
-            entered.slice(0,18);
     }
+);
 
-    if(!myName){
 
-        myName =
-            "Player";
+$("quickJoin").addEventListener(
+    "click",
+    ()=>{
+
+        socket.emit(
+            "quickJoin",
+            {
+                name:getName()
+            }
+        );
+
     }
-
-    return myName;
-}
+);
 
 
-$("createRoom").onclick = () => {
+$("joinRoom").addEventListener(
+    "click",
+    ()=>{
 
-    socket.emit(
-        "createRoom",
-        {
-            name:
-                getName()
-        }
-    );
-};
-
-
-$("quickJoin").onclick = () => {
-
-    socket.emit(
-        "quickJoin",
-        {
-            name:
-                getName()
-        }
-    );
-};
-
-
-$("joinRoom").onclick = () => {
-
-    const code =
-        $("roomCode")
-            .value
+        const code =
+            roomInput.value
             .trim()
             .toUpperCase();
 
-    if(code.length !== 5){
+        if(!code){
 
-        alert(
-            "Enter a valid 5-character room code."
+            alert(
+                "Enter a room code."
+            );
+
+            return;
+        }
+
+        socket.emit(
+            "joinRoom",
+            {
+                code,
+                name:getName()
+            }
         );
 
-        return;
     }
+);
 
-    socket.emit(
-        "joinRoom",
-        {
-            code,
-            name:
-                getName()
+
+roomInput.addEventListener(
+    "input",
+    ()=>{
+
+        roomInput.value =
+            roomInput.value
+            .toUpperCase()
+            .replace(/[^A-Z0-9]/g,"")
+            .slice(0,5);
+
+    }
+);
+
+
+/* =========================
+   ROOM CODE CLICK
+========================= */
+
+lobbyCode.addEventListener(
+    "click",
+    async()=>{
+
+        if(!roomCode){
+            return;
         }
-    );
-};
+
+        try{
+
+            await navigator.clipboard.writeText(
+                roomCode
+            );
+
+            const old =
+                lobbyCode.textContent;
+
+            lobbyCode.textContent =
+                "COPIED";
+
+            setTimeout(()=>{
+                lobbyCode.textContent =
+                    old;
+            },900);
+
+        }catch(_){}
+
+    }
+);
 
 
-/* ======================================================
-   RESULTS
-====================================================== */
+/* =========================
+   RESULT CLOSE
+========================= */
 
-function renderResults(
-    leaderboard
-){
+$("closeModal").addEventListener(
+    "click",
+    ()=>{
 
-    $("resultList").innerHTML =
-        leaderboard.map(
-            player => {
+        modal.classList.remove(
+            "show"
+        );
 
-                return `
-                    <div class="result-row">
+        wordLabel.textContent =
+            "DRAW THIS";
 
-                        <div class="rank">
-                            #${player.position}
-                        </div>
+        wordEl.textContent =
+            "Waiting...";
 
-                        <div class="result-name">
-                            ${escapeHTML(player.name)}
-                        </div>
+        showScreen("lobby");
 
-                        <div class="result-score">
-                            ${player.score}
-                        </div>
+    }
+);
 
-                    </div>
-                `;
 
+/* =========================
+   KEYBOARD
+========================= */
+
+document.addEventListener(
+    "keydown",
+    event=>{
+
+        if(
+            event.key === "ArrowUp" ||
+            event.key === "ArrowDown" ||
+            event.key === " "
+        ){
+
+            if(
+                document.activeElement ===
+                document.body
+            ){
+                event.preventDefault();
             }
-        ).join("");
-}
+
+        }
+
+    }
+);
 
 
-$("closeModal").onclick = () => {
-
-    $("modal")
-        .classList
-        .remove("show");
-};
-
-
-/* ======================================================
-   INITIALIZE
-====================================================== */
+/* =========================
+   START
+========================= */
 
 initCanvas();
 
-
-window.addEventListener(
-    "orientationchange",
-    () => {
-
-        setTimeout(
-            () => {
-                resizeCanvas(false);
-            },
-            250
-        );
-
-    }
-);
-
-
-window.addEventListener(
-    "keydown",
-    event => {
-
-        if(
-            [
-                "ArrowUp",
-                "ArrowDown",
-                " "
-            ].includes(event.key)
-        ){
-
-            event.preventDefault();
-        }
-
-    }
-);
+updatePreview();
 
 </script>
 
