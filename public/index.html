@@ -1,0 +1,2498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta
+    name="viewport"
+    content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"
+/>
+
+<title>Scribblix</title>
+
+<script src="https://sdk.crazygames.com/crazygames-sdk-v3.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+:root{
+    --bg:#f6f8fc;
+    --panel:#ffffff;
+    --panel2:#f9faff;
+    --line:#e8ebf2;
+    --text:#172033;
+    --muted:#7b8496;
+    --primary:#5b63e9;
+    --primary2:#7b6cf6;
+    --green:#24b47e;
+    --red:#ef6262;
+    --shadow:0 20px 60px rgba(37,45,80,.10);
+}
+
+html,
+body{
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    font-family:
+        Inter,
+        ui-sans-serif,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+    background:var(--bg);
+    color:var(--text);
+}
+
+button,
+input{
+    font:inherit;
+}
+
+button{
+    border:0;
+    cursor:pointer;
+}
+
+.app{
+    position:relative;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+}
+
+.bg{
+    position:absolute;
+    inset:0;
+    overflow:hidden;
+    pointer-events:none;
+}
+
+.blob{
+    position:absolute;
+    width:420px;
+    height:420px;
+    border-radius:50%;
+    filter:blur(55px);
+    opacity:.35;
+    animation:float 12s ease-in-out infinite;
+}
+
+.blob.one{
+    background:#d8ddff;
+    left:-150px;
+    top:-160px;
+}
+
+.blob.two{
+    background:#d9f7ee;
+    right:-160px;
+    top:15%;
+    animation-delay:-4s;
+}
+
+.blob.three{
+    background:#ffe6d2;
+    left:30%;
+    bottom:-260px;
+    animation-delay:-7s;
+}
+
+@keyframes float{
+    0%,100%{
+        transform:translate(0,0);
+    }
+    50%{
+        transform:translate(35px,-25px);
+    }
+}
+
+.screen{
+    position:relative;
+    z-index:2;
+    width:100%;
+    height:100%;
+    display:none;
+}
+
+.screen.active{
+    display:flex;
+}
+
+/* HOME */
+
+.home{
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+}
+
+.home-card{
+    width:min(1050px,100%);
+    display:grid;
+    grid-template-columns:1.1fr .9fr;
+    gap:30px;
+    background:rgba(255,255,255,.88);
+    border:1px solid rgba(255,255,255,.8);
+    border-radius:32px;
+    padding:34px;
+    box-shadow:var(--shadow);
+    backdrop-filter:blur(18px);
+}
+
+.brand{
+    display:flex;
+    align-items:center;
+    gap:13px;
+}
+
+.logo{
+    width:54px;
+    height:54px;
+    border-radius:17px;
+    display:grid;
+    place-items:center;
+    color:white;
+    font-weight:900;
+    font-size:23px;
+    background:linear-gradient(
+        135deg,
+        var(--primary),
+        var(--primary2)
+    );
+    box-shadow:
+        0 10px 25px rgba(91,99,233,.25);
+}
+
+.brand h1{
+    font-size:29px;
+    letter-spacing:-1px;
+}
+
+.brand span{
+    color:var(--primary);
+}
+
+.hero{
+    padding:25px;
+}
+
+.hero h2{
+    margin-top:48px;
+    font-size:clamp(38px,5vw,68px);
+    line-height:.95;
+    letter-spacing:-4px;
+}
+
+.hero h2 span{
+    color:var(--primary);
+}
+
+.hero p{
+    margin-top:22px;
+    color:var(--muted);
+    font-size:16px;
+    line-height:1.6;
+    max-width:550px;
+}
+
+.mini-features{
+    display:flex;
+    flex-wrap:wrap;
+    gap:9px;
+    margin-top:24px;
+}
+
+.pill{
+    padding:9px 13px;
+    border:1px solid var(--line);
+    background:#fff;
+    border-radius:999px;
+    font-size:12px;
+    font-weight:700;
+    color:#687184;
+}
+
+.join-card{
+    align-self:center;
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:25px;
+    padding:25px;
+    box-shadow:0 14px 40px rgba(30,40,80,.07);
+}
+
+.join-card h3{
+    font-size:22px;
+}
+
+.join-card .sub{
+    margin-top:7px;
+    color:var(--muted);
+    font-size:13px;
+}
+
+.field{
+    margin-top:18px;
+}
+
+.field label{
+    display:block;
+    font-size:12px;
+    font-weight:800;
+    margin-bottom:8px;
+    color:#687184;
+}
+
+.field input{
+    width:100%;
+    height:49px;
+    border:1px solid var(--line);
+    outline:0;
+    border-radius:13px;
+    padding:0 14px;
+    background:#fafbfe;
+    color:var(--text);
+}
+
+.field input:focus{
+    border-color:#b8bcfa;
+    box-shadow:0 0 0 4px rgba(91,99,233,.08);
+}
+
+.primary{
+    width:100%;
+    height:50px;
+    border-radius:14px;
+    color:white;
+    font-weight:850;
+    background:linear-gradient(
+        135deg,
+        var(--primary),
+        var(--primary2)
+    );
+    box-shadow:0 10px 25px rgba(91,99,233,.20);
+    transition:.18s;
+}
+
+.primary:hover{
+    transform:translateY(-1px);
+}
+
+.quick{
+    margin-top:10px;
+    background:#eef0ff;
+    color:#555ed8;
+    box-shadow:none;
+}
+
+.divider{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin:18px 0;
+    color:#a1a8b6;
+    font-size:11px;
+    font-weight:800;
+}
+
+.divider::before,
+.divider::after{
+    content:"";
+    height:1px;
+    background:var(--line);
+    flex:1;
+}
+
+.join-row{
+    display:grid;
+    grid-template-columns:1fr 105px;
+    gap:9px;
+}
+
+.secondary{
+    height:49px;
+    border-radius:13px;
+    background:#f1f3f8;
+    color:#4e5667;
+    font-weight:800;
+}
+
+/* LOBBY */
+
+.lobby{
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+}
+
+.lobby-card{
+    width:min(720px,100%);
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:28px;
+    padding:27px;
+    box-shadow:var(--shadow);
+}
+
+.lobby-top{
+    display:flex;
+    justify-content:space-between;
+    gap:20px;
+    align-items:flex-start;
+}
+
+.lobby-title h2{
+    font-size:27px;
+}
+
+.lobby-title p{
+    margin-top:5px;
+    color:var(--muted);
+    font-size:13px;
+}
+
+.room-code{
+    background:#f0f2ff;
+    border:1px solid #e0e2ff;
+    color:#555ed8;
+    padding:10px 13px;
+    border-radius:13px;
+    font-weight:900;
+    letter-spacing:2px;
+}
+
+.player-grid{
+    margin-top:23px;
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:10px;
+}
+
+.player-slot{
+    min-height:104px;
+    padding:14px;
+    border-radius:18px;
+    background:#fafbfe;
+    border:1px solid var(--line);
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+}
+
+.avatar{
+    width:42px;
+    height:42px;
+    border-radius:14px;
+    display:grid;
+    place-items:center;
+    font-weight:900;
+    margin-bottom:7px;
+}
+
+.player-slot .name{
+    max-width:100%;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    font-size:12px;
+    font-weight:800;
+}
+
+.wait{
+    margin-top:20px;
+    text-align:center;
+    color:var(--muted);
+    font-size:13px;
+}
+
+/* GAME */
+
+.game{
+    padding:14px;
+}
+
+.game-shell{
+    width:100%;
+    height:100%;
+    display:grid;
+    grid-template-columns:250px minmax(0,1fr) 300px;
+    gap:12px;
+}
+
+.side,
+.board-wrap,
+.chat{
+    background:rgba(255,255,255,.94);
+    border:1px solid var(--line);
+    border-radius:22px;
+    box-shadow:0 10px 35px rgba(30,40,80,.06);
+    min-height:0;
+}
+
+.side{
+    padding:14px;
+    overflow:auto;
+}
+
+.side-title{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:12px;
+}
+
+.side-title h3{
+    font-size:15px;
+}
+
+.count{
+    color:var(--muted);
+    font-size:11px;
+    font-weight:800;
+}
+
+.player-list{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+}
+
+.game-player{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    padding:10px;
+    border:1px solid var(--line);
+    border-radius:14px;
+    background:#fbfcff;
+}
+
+.game-player.active-drawer{
+    border-color:#c8cbff;
+    background:#f2f3ff;
+}
+
+.game-player .p-avatar{
+    flex:none;
+    width:36px;
+    height:36px;
+    border-radius:12px;
+    display:grid;
+    place-items:center;
+    font-weight:900;
+    font-size:12px;
+}
+
+.p-info{
+    min-width:0;
+    flex:1;
+}
+
+.p-name{
+    font-size:12px;
+    font-weight:850;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+.p-score{
+    color:var(--muted);
+    font-size:11px;
+    margin-top:2px;
+}
+
+.turn-badge{
+    font-size:9px;
+    font-weight:900;
+    color:#5b63e9;
+}
+
+.board-wrap{
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+}
+
+.topbar{
+    min-height:66px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    padding:12px 15px;
+    border-bottom:1px solid var(--line);
+}
+
+.round-label{
+    font-size:12px;
+    font-weight:900;
+    color:#697286;
+}
+
+.round-label strong{
+    color:var(--text);
+}
+
+.word-box{
+    min-width:190px;
+    text-align:center;
+    padding:9px 15px;
+    border-radius:14px;
+    background:#f2f3ff;
+    color:#565fdc;
+}
+
+.word-label{
+    font-size:9px;
+    text-transform:uppercase;
+    letter-spacing:1.4px;
+    font-weight:900;
+    opacity:.65;
+}
+
+.word{
+    margin-top:2px;
+    font-size:17px;
+    font-weight:950;
+}
+
+.timer{
+    min-width:66px;
+    text-align:center;
+    font-size:20px;
+    font-weight:950;
+}
+
+.canvas-area{
+    position:relative;
+    flex:1;
+    min-height:0;
+    padding:12px;
+    background:#f7f8fb;
+}
+
+.canvas-box{
+    position:relative;
+    width:100%;
+    height:100%;
+    min-height:240px;
+    border-radius:17px;
+    overflow:hidden;
+    background:white;
+    border:1px solid #e7e9ef;
+    box-shadow:inset 0 0 0 1px rgba(0,0,0,.015);
+}
+
+#canvas{
+    display:block;
+    width:100%;
+    height:100%;
+    touch-action:none;
+    cursor:crosshair;
+}
+
+.tools{
+    position:absolute;
+    left:24px;
+    bottom:24px;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    padding:7px;
+    background:rgba(255,255,255,.94);
+    border:1px solid var(--line);
+    border-radius:14px;
+    box-shadow:0 9px 30px rgba(20,30,70,.12);
+}
+
+.tool{
+    width:35px;
+    height:35px;
+    border-radius:10px;
+    background:#f1f3f8;
+    color:#596174;
+    display:grid;
+    place-items:center;
+    font-size:12px;
+    font-weight:900;
+}
+
+.tool.selected{
+    background:#5b63e9;
+    color:white;
+}
+
+.color{
+    width:22px;
+    height:22px;
+    border-radius:50%;
+    border:2px solid white;
+    box-shadow:0 0 0 1px #d9dce5;
+}
+
+.chat{
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+}
+
+.chat-head{
+    padding:15px;
+    border-bottom:1px solid var(--line);
+}
+
+.chat-head h3{
+    font-size:15px;
+}
+
+.messages{
+    flex:1;
+    overflow:auto;
+    padding:12px;
+    display:flex;
+    flex-direction:column;
+    gap:7px;
+}
+
+.msg{
+    padding:8px 10px;
+    border-radius:11px;
+    background:#f6f7fa;
+    font-size:12px;
+    line-height:1.4;
+}
+
+.msg strong{
+    font-weight:900;
+}
+
+.msg.system{
+    background:#f0f2ff;
+    color:#5961d6;
+}
+
+.msg.correct{
+    background:#eaf9f2;
+    color:#16815c;
+    font-weight:800;
+}
+
+.chat-input{
+    display:flex;
+    gap:7px;
+    padding:10px;
+    border-top:1px solid var(--line);
+}
+
+.chat-input input{
+    flex:1;
+    min-width:0;
+    height:42px;
+    border:1px solid var(--line);
+    border-radius:11px;
+    padding:0 11px;
+    outline:0;
+    background:#fafbfe;
+}
+
+.chat-input button{
+    width:44px;
+    border-radius:11px;
+    background:#5b63e9;
+    color:white;
+    font-weight:900;
+}
+
+/* RESULT */
+
+.modal{
+    position:fixed;
+    inset:0;
+    z-index:20;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    background:rgba(22,28,48,.35);
+    backdrop-filter:blur(8px);
+}
+
+.modal.show{
+    display:flex;
+}
+
+.modal-card{
+    width:min(480px,100%);
+    max-height:90vh;
+    overflow:auto;
+    background:#fff;
+    border-radius:26px;
+    padding:25px;
+    box-shadow:0 30px 90px rgba(20,30,70,.2);
+}
+
+.modal-card h2{
+    font-size:27px;
+}
+
+.result-list{
+    margin-top:17px;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+}
+
+.result-row{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:11px;
+    background:#f8f9fc;
+    border:1px solid var(--line);
+    border-radius:14px;
+}
+
+.rank{
+    width:30px;
+    font-weight:950;
+    color:#71798b;
+}
+
+.result-name{
+    flex:1;
+    font-size:13px;
+    font-weight:850;
+}
+
+.result-score{
+    font-weight:950;
+}
+
+/* RESPONSIVE */
+
+@media(max-width:1050px){
+    .game-shell{
+        grid-template-columns:190px minmax(0,1fr) 250px;
+    }
+
+    .home-card{
+        grid-template-columns:1fr;
+        max-width:650px;
+        max-height:94vh;
+        overflow:auto;
+    }
+
+    .hero h2{
+        margin-top:25px;
+    }
+}
+
+@media(max-width:800px){
+    .game{
+        padding:8px;
+    }
+
+    .game-shell{
+        grid-template-columns:1fr;
+        grid-template-rows:auto minmax(0,1fr) auto;
+    }
+
+    .side{
+        max-height:105px;
+        overflow:hidden;
+    }
+
+    .player-list{
+        flex-direction:row;
+        overflow:auto;
+    }
+
+    .game-player{
+        min-width:145px;
+    }
+
+    .chat{
+        max-height:180px;
+    }
+
+    .canvas-area{
+        min-height:0;
+    }
+
+    .topbar{
+        min-height:58px;
+    }
+
+    .word-box{
+        min-width:145px;
+    }
+}
+
+@media(max-width:560px){
+    .home{
+        padding:10px;
+    }
+
+    .home-card{
+        padding:15px;
+        border-radius:22px;
+    }
+
+    .hero{
+        padding:8px;
+    }
+
+    .hero h2{
+        font-size:43px;
+        letter-spacing:-2px;
+    }
+
+    .join-card{
+        padding:17px;
+    }
+
+    .player-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .lobby-card{
+        padding:17px;
+    }
+
+    .lobby-top{
+        flex-direction:column;
+    }
+
+    .game{
+        padding:5px;
+    }
+
+    .game-shell{
+        gap:5px;
+    }
+
+    .side{
+        border-radius:16px;
+    }
+
+    .board-wrap{
+        border-radius:16px;
+    }
+
+    .chat{
+        border-radius:16px;
+    }
+
+    .tools{
+        left:16px;
+        bottom:16px;
+        max-width:calc(100% - 32px);
+        overflow:auto;
+    }
+
+    .tool{
+        flex:none;
+    }
+
+    .topbar{
+        padding:8px;
+        gap:6px;
+    }
+
+    .word-box{
+        min-width:125px;
+    }
+
+    .round-label{
+        font-size:10px;
+    }
+
+    .timer{
+        min-width:45px;
+        font-size:16px;
+    }
+}
+
+.hidden{
+    display:none !important;
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<div class="bg">
+    <div class="blob one"></div>
+    <div class="blob two"></div>
+    <div class="blob three"></div>
+</div>
+
+<!-- HOME -->
+
+<section id="home" class="screen active home">
+
+<div class="home-card">
+
+<div class="hero">
+
+    <div class="brand">
+        <div class="logo">S</div>
+        <h1>Scribbl<span>ix</span></h1>
+    </div>
+
+    <h2>
+        Draw it.<br>
+        <span>Guess it.</span>
+    </h2>
+
+    <p>
+        A fast multiplayer drawing party where one player
+        draws and everyone else races to guess the word.
+    </p>
+
+    <div class="mini-features">
+        <div class="pill">2–8 Players</div>
+        <div class="pill">Live Drawing</div>
+        <div class="pill">6 Rounds</div>
+        <div class="pill">Quick Join</div>
+    </div>
+
+</div>
+
+<div class="join-card">
+
+    <h3>Ready to play?</h3>
+    <div class="sub">
+        Your CrazyGames name will be used when available.
+    </div>
+
+    <div class="field">
+        <label>PLAYER NAME</label>
+        <input
+            id="name"
+            maxlength="18"
+            placeholder="Your name"
+            autocomplete="off"
+        >
+    </div>
+
+    <button id="quickJoin" class="primary quick">
+        QUICK JOIN
+    </button>
+
+    <div class="divider">OR</div>
+
+    <button id="createRoom" class="primary">
+        CREATE ROOM
+    </button>
+
+    <div class="join-row" style="margin-top:10px;">
+        <input
+            id="roomCode"
+            maxlength="5"
+            placeholder="ROOM CODE"
+            style="
+                height:49px;
+                border:1px solid var(--line);
+                border-radius:13px;
+                padding:0 13px;
+                outline:0;
+                text-transform:uppercase;
+            "
+        >
+
+        <button id="joinRoom" class="secondary">
+            JOIN
+        </button>
+    </div>
+
+</div>
+
+</div>
+</section>
+
+<!-- LOBBY -->
+
+<section id="lobby" class="screen lobby">
+
+<div class="lobby-card">
+
+    <div class="lobby-top">
+
+        <div class="lobby-title">
+            <h2>Waiting room</h2>
+            <p>Players will automatically start when 2 or more are ready.</p>
+        </div>
+
+        <div id="lobbyCode" class="room-code">
+            -----
+        </div>
+
+    </div>
+
+    <div id="lobbyPlayers" class="player-grid"></div>
+
+    <div id="waitText" class="wait">
+        Waiting for another player...
+    </div>
+
+</div>
+
+</section>
+
+<!-- GAME -->
+
+<section id="game" class="screen game">
+
+<div class="game-shell">
+
+    <aside class="side">
+
+        <div class="side-title">
+            <h3>Players</h3>
+            <div id="playerCount" class="count">0/8</div>
+        </div>
+
+        <div id="playerList" class="player-list"></div>
+
+    </aside>
+
+    <main class="board-wrap">
+
+        <div class="topbar">
+
+            <div class="round-label">
+                ROUND
+                <strong id="round">1/6</strong>
+            </div>
+
+            <div class="word-box">
+
+                <div id="wordLabel" class="word-label">
+                    DRAW THIS
+                </div>
+
+                <div id="word" class="word">
+                    Waiting...
+                </div>
+
+            </div>
+
+            <div id="timer" class="timer">
+                60
+            </div>
+
+        </div>
+
+        <div class="canvas-area">
+
+            <div class="canvas-box">
+                <canvas id="canvas"></canvas>
+
+                <div id="tools" class="tools hidden">
+
+                    <button
+                        class="tool selected"
+                        data-size="4"
+                    >
+                        S
+                    </button>
+
+                    <button
+                        class="tool"
+                        data-size="9"
+                    >
+                        M
+                    </button>
+
+                    <button
+                        class="tool"
+                        data-size="16"
+                    >
+                        L
+                    </button>
+
+                    <button
+                        class="tool"
+                        id="eraser"
+                    >
+                        E
+                    </button>
+
+                    <button
+                        class="tool"
+                        id="clear"
+                    >
+                        C
+                    </button>
+
+                    <button
+                        class="color"
+                        data-color="#111111"
+                        style="background:#111111"
+                    ></button>
+
+                    <button
+                        class="color"
+                        data-color="#ef5350"
+                        style="background:#ef5350"
+                    ></button>
+
+                    <button
+                        class="color"
+                        data-color="#3f6df6"
+                        style="background:#3f6df6"
+                    ></button>
+
+                    <button
+                        class="color"
+                        data-color="#24ad78"
+                        style="background:#24ad78"
+                    ></button>
+
+                    <button
+                        class="color"
+                        data-color="#f3a51b"
+                        style="background:#f3a51b"
+                    ></button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+    <aside class="chat">
+
+        <div class="chat-head">
+            <h3>Chat</h3>
+        </div>
+
+        <div id="messages" class="messages"></div>
+
+        <div class="chat-input">
+
+            <input
+                id="chatInput"
+                maxlength="100"
+                placeholder="Type your guess..."
+                autocomplete="off"
+            >
+
+            <button id="sendChat">
+                →
+            </button>
+
+        </div>
+
+    </aside>
+
+</div>
+
+</section>
+
+<!-- RESULT -->
+
+<div id="modal" class="modal">
+
+<div class="modal-card">
+
+    <h2 id="modalTitle">
+        Round finished
+    </h2>
+
+    <p
+        id="modalSub"
+        style="
+            margin-top:6px;
+            color:var(--muted);
+            font-size:13px;
+        "
+    ></p>
+
+    <div id="resultList" class="result-list"></div>
+
+    <button
+        id="closeModal"
+        class="primary"
+        style="margin-top:18px;"
+    >
+        CONTINUE
+    </button>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+const socket = io();
+
+let myId = null;
+let myName = "";
+let roomCode = "";
+let currentState = null;
+let secretWord = "";
+
+let drawing = false;
+let lastX = 0;
+let lastY = 0;
+
+let brushSize = 4;
+let brushColor = "#111111";
+let erasing = false;
+
+let canvas;
+let ctx;
+
+let cssWidth = 0;
+let cssHeight = 0;
+let pixelRatio = 1;
+
+const $ = id =>
+    document.getElementById(id);
+
+function showScreen(id){
+
+    document
+        .querySelectorAll(".screen")
+        .forEach(screen =>
+            screen.classList.remove("active")
+        );
+
+    $(id).classList.add("active");
+
+    if(id === "game"){
+        requestAnimationFrame(() => {
+            resizeCanvas(false);
+        });
+    }
+}
+
+function addMessage(
+    text,
+    type = ""
+){
+
+    const el =
+        document.createElement("div");
+
+    el.className =
+        `msg ${type}`;
+
+    el.innerHTML = text;
+
+    $("messages").appendChild(el);
+
+    $("messages").scrollTop =
+        $("messages").scrollHeight;
+}
+
+function escapeHTML(text){
+
+    return String(text)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+}
+
+// ======================================================
+// CRAZYGAMES USER
+// ======================================================
+
+async function loadCrazyGamesUser(){
+
+    try{
+
+        if(
+            !window.CrazyGames ||
+            !window.CrazyGames.SDK
+        ){
+            return;
+        }
+
+        await window.CrazyGames.SDK.init();
+
+        const user =
+            await window.CrazyGames.SDK.user.getUser();
+
+        if(user){
+
+            const possibleName =
+                user.username ||
+                user.displayName ||
+                user.name;
+
+            if(
+                possibleName &&
+                typeof possibleName === "string"
+            ){
+                myName =
+                    possibleName
+                        .trim()
+                        .slice(0,18);
+
+                $("name").value =
+                    myName;
+            }
+        }
+
+    }catch(error){
+
+        console.log(
+            "CrazyGames user unavailable:",
+            error
+        );
+    }
+}
+
+// ======================================================
+// SOCKET
+// ======================================================
+
+socket.on("connect", () => {
+
+    myId = socket.id;
+
+    loadCrazyGamesUser();
+});
+
+socket.on(
+    "roomCreated",
+    data => {
+
+        roomCode =
+            data.code;
+
+        $("lobbyCode")
+            .textContent =
+            roomCode;
+
+        showScreen("lobby");
+    }
+);
+
+socket.on(
+    "joinedRoom",
+    data => {
+
+        roomCode =
+            data.code;
+
+        $("lobbyCode")
+            .textContent =
+            roomCode;
+
+        showScreen("lobby");
+    }
+);
+
+socket.on(
+    "roomState",
+    state => {
+
+        currentState =
+            state;
+
+        roomCode =
+            state.code;
+
+        renderPlayers(
+            state.players,
+            state.drawerId
+        );
+
+        $("round").textContent =
+            `${state.round || 0}/${state.totalRounds}`;
+
+        $("timer").textContent =
+            state.timeLeft || 0;
+
+        $("playerCount").textContent =
+            `${state.players.length}/8`;
+
+        if(state.gameStarted){
+
+            showScreen("game");
+
+            updateDrawerUI(
+                state.drawerId
+            );
+
+            requestAnimationFrame(() => {
+                resizeCanvas(false);
+            });
+
+        }else{
+
+            if(state.players.length > 0){
+
+                $("lobbyCode")
+                    .textContent =
+                    state.code;
+
+                renderLobby(
+                    state.players
+                );
+
+                showScreen("lobby");
+            }
+        }
+    }
+);
+
+socket.on(
+    "roundStarted",
+    data => {
+
+        secretWord = "";
+
+        $("wordLabel")
+            .textContent =
+            "DRAW THIS";
+
+        $("word")
+            .textContent =
+            "Loading...";
+
+        $("round").textContent =
+            `${data.round}/${data.totalRounds}`;
+
+        $("timer").textContent =
+            data.timeLeft;
+
+        clearCanvas();
+
+        updateDrawerUI(
+            data.drawerId
+        );
+    }
+);
+
+// ======================================================
+// SECRET WORD
+// ======================================================
+
+socket.on(
+    "secretWord",
+    data => {
+
+        secretWord =
+            data.word || "";
+
+        // Actual word is shown ONLY to drawer.
+        $("wordLabel")
+            .textContent =
+            "YOUR WORD";
+
+        $("word")
+            .textContent =
+            secretWord || "—";
+
+        $("word").style.letterSpacing =
+            "0";
+    }
+);
+
+// ======================================================
+// TIMER
+// ======================================================
+
+socket.on(
+    "timer",
+    time => {
+
+        $("timer").textContent =
+            Math.max(0,time);
+
+        if(time <= 10){
+
+            $("timer").style.color =
+                "#ef6262";
+
+        }else{
+
+            $("timer").style.color =
+                "var(--text)";
+        }
+    }
+);
+
+// ======================================================
+// ROUND END
+// ======================================================
+
+socket.on(
+    "roundEnded",
+    data => {
+
+        $("wordLabel")
+            .textContent =
+            "ANSWER";
+
+        $("word")
+            .textContent =
+            data.word || "—";
+
+        $("tools")
+            .classList
+            .add("hidden");
+
+        addMessage(
+            `The word was <strong>${escapeHTML(data.word)}</strong>.`,
+            "system"
+        );
+    }
+);
+
+// ======================================================
+// GAME FINISHED
+// ======================================================
+
+socket.on(
+    "gameFinished",
+    data => {
+
+        renderResults(
+            data.leaderboard || []
+        );
+
+        $("modalTitle")
+            .textContent =
+            "Game complete";
+
+        $("modalSub")
+            .textContent =
+            "Final leaderboard";
+
+        $("modal")
+            .classList
+            .add("show");
+
+        $("tools")
+            .classList
+            .add("hidden");
+    }
+);
+
+// ======================================================
+// CHAT
+// ======================================================
+
+socket.on(
+    "chatMessage",
+    data => {
+
+        addMessage(
+            `<strong>${escapeHTML(data.playerName)}</strong>: ${escapeHTML(data.message)}`
+        );
+    }
+);
+
+socket.on(
+    "systemMessage",
+    data => {
+
+        addMessage(
+            escapeHTML(data.message),
+            "system"
+        );
+    }
+);
+
+socket.on(
+    "correctGuess",
+    data => {
+
+        addMessage(
+            `<strong>${escapeHTML(data.playerName)}</strong> guessed correctly! +${data.points}`,
+            "correct"
+        );
+    }
+);
+
+socket.on(
+    "errorMessage",
+    message => {
+
+        alert(message);
+    }
+);
+
+// ======================================================
+// DRAW EVENTS
+// ======================================================
+
+socket.on(
+    "draw",
+    data => {
+
+        drawRemote(data);
+    }
+);
+
+socket.on(
+    "clearBoard",
+    () => {
+
+        clearCanvas();
+    }
+);
+
+// ======================================================
+// PLAYER UI
+// ======================================================
+
+function avatarHTML(avatar){
+
+    if(!avatar){
+
+        return `
+            <div
+                class="avatar"
+                style="
+                    background:#eef0f5;
+                    color:#6d7482;
+                "
+            >?</div>
+        `;
+    }
+
+    return `
+        <div
+            class="avatar"
+            style="
+                background:${avatar.bg};
+                color:${avatar.fg};
+            "
+        >${avatar.mark}</div>
+    `;
+}
+
+function renderLobby(players){
+
+    $("lobbyPlayers").innerHTML =
+        players.map(player => {
+
+            return `
+                <div class="player-slot">
+                    ${avatarHTML(player.avatar)}
+                    <div class="name">
+                        ${escapeHTML(player.name)}
+                    </div>
+                </div>
+            `;
+
+        }).join("");
+
+    $("waitText").textContent =
+        players.length >= 2
+            ? "Starting game..."
+            : "Waiting for another player...";
+}
+
+function renderPlayers(
+    players,
+    drawerId
+){
+
+    $("playerList").innerHTML =
+        players.map(player => {
+
+            const isDrawer =
+                player.id === drawerId;
+
+            return `
+                <div
+                    class="game-player ${
+                        isDrawer
+                            ? "active-drawer"
+                            : ""
+                    }"
+                >
+
+                    <div
+                        class="p-avatar"
+                        style="
+                            background:${
+                                player.avatar?.bg ||
+                                "#eef0f5"
+                            };
+                            color:${
+                                player.avatar?.fg ||
+                                "#687184"
+                            };
+                        "
+                    >
+                        ${
+                            player.avatar?.mark ||
+                            "?"
+                        }
+                    </div>
+
+                    <div class="p-info">
+
+                        <div class="p-name">
+                            ${escapeHTML(player.name)}
+                        </div>
+
+                        <div class="p-score">
+                            ${player.score} pts
+                        </div>
+
+                    </div>
+
+                    ${
+                        isDrawer
+                            ? `<div class="turn-badge">DRAWING</div>`
+                            : ""
+                    }
+
+                </div>
+            `;
+
+        }).join("");
+}
+
+// ======================================================
+// DRAWER UI
+// ======================================================
+
+function updateDrawerUI(
+    drawerId
+){
+
+    const amDrawer =
+        drawerId === myId;
+
+    if(amDrawer){
+
+        $("tools")
+            .classList
+            .remove("hidden");
+
+        if(secretWord){
+
+            $("wordLabel")
+                .textContent =
+                "YOUR WORD";
+
+            $("word")
+                .textContent =
+                secretWord;
+        }else{
+
+            $("wordLabel")
+                .textContent =
+                "YOUR WORD";
+
+            $("word")
+                .textContent =
+                "Loading...";
+        }
+
+    }else{
+
+        // Tools MUST disappear when not drawer.
+        $("tools")
+            .classList
+            .add("hidden");
+
+        // Guessers never see the word.
+        $("wordLabel")
+            .textContent =
+            "DRAW THIS";
+
+        $("word")
+            .textContent =
+            "Guess the word";
+    }
+}
+
+// ======================================================
+// CANVAS
+// ======================================================
+
+function initCanvas(){
+
+    canvas =
+        $("canvas");
+
+    ctx =
+        canvas.getContext("2d");
+
+    resizeCanvas(true);
+
+    window.addEventListener(
+        "resize",
+        () => {
+            requestAnimationFrame(
+                () => resizeCanvas(false)
+            );
+        }
+    );
+
+    canvas.addEventListener(
+        "pointerdown",
+        startDrawing
+    );
+
+    canvas.addEventListener(
+        "pointermove",
+        moveDrawing
+    );
+
+    canvas.addEventListener(
+        "pointerup",
+        stopDrawing
+    );
+
+    canvas.addEventListener(
+        "pointercancel",
+        stopDrawing
+    );
+
+    canvas.addEventListener(
+        "pointerleave",
+        stopDrawing
+    );
+}
+
+/*
+    IMPORTANT:
+    Do NOT resize the canvas every roomState.
+    If size has not changed, do absolutely nothing.
+
+    If the size really changes, copy the current bitmap
+    before changing canvas dimensions.
+*/
+
+function resizeCanvas(force){
+
+    if(!canvas || !ctx) return;
+
+    const rect =
+        canvas.getBoundingClientRect();
+
+    const newWidth =
+        Math.max(
+            1,
+            Math.round(rect.width)
+        );
+
+    const newHeight =
+        Math.max(
+            1,
+            Math.round(rect.height)
+        );
+
+    const newRatio =
+        Math.min(
+            window.devicePixelRatio || 1,
+            2
+        );
+
+    if(
+        !force &&
+        newWidth === cssWidth &&
+        newHeight === cssHeight &&
+        newRatio === pixelRatio
+    ){
+        return;
+    }
+
+    const oldCanvas =
+        document.createElement("canvas");
+
+    let hadDrawing = false;
+
+    if(
+        canvas.width > 0 &&
+        canvas.height > 0 &&
+        cssWidth > 0 &&
+        cssHeight > 0
+    ){
+
+        oldCanvas.width =
+            canvas.width;
+
+        oldCanvas.height =
+            canvas.height;
+
+        const oldCtx =
+            oldCanvas.getContext("2d");
+
+        oldCtx.drawImage(
+            canvas,
+            0,
+            0
+        );
+
+        hadDrawing = true;
+    }
+
+    const oldCssWidth =
+        cssWidth;
+
+    const oldCssHeight =
+        cssHeight;
+
+    const oldRatio =
+        pixelRatio;
+
+    cssWidth =
+        newWidth;
+
+    cssHeight =
+        newHeight;
+
+    pixelRatio =
+        newRatio;
+
+    canvas.width =
+        Math.round(
+            cssWidth * pixelRatio
+        );
+
+    canvas.height =
+        Math.round(
+            cssHeight * pixelRatio
+        );
+
+    ctx =
+        canvas.getContext("2d");
+
+    ctx.setTransform(
+        pixelRatio,
+        0,
+        0,
+        pixelRatio,
+        0,
+        0
+    );
+
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+
+    if(
+        hadDrawing &&
+        oldCssWidth > 0 &&
+        oldCssHeight > 0
+    ){
+
+        ctx.drawImage(
+            oldCanvas,
+            0,
+            0,
+            oldCanvas.width,
+            oldCanvas.height,
+            0,
+            0,
+            cssWidth,
+            cssHeight
+        );
+    }
+}
+
+function getPoint(event){
+
+    const rect =
+        canvas.getBoundingClientRect();
+
+    return {
+        x:
+            (event.clientX - rect.left) /
+            rect.width,
+
+        y:
+            (event.clientY - rect.top) /
+            rect.height
+    };
+}
+
+function drawLocalLine(
+    x,
+    y,
+    px,
+    py
+){
+
+    ctx.save();
+
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+
+    if(erasing){
+
+        ctx.globalCompositeOperation =
+            "destination-out";
+
+        ctx.strokeStyle =
+            "rgba(0,0,0,1)";
+
+    }else{
+
+        ctx.globalCompositeOperation =
+            "source-over";
+
+        ctx.strokeStyle =
+            brushColor;
+    }
+
+    ctx.lineWidth =
+        brushSize;
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        px * cssWidth,
+        py * cssHeight
+    );
+
+    ctx.lineTo(
+        x * cssWidth,
+        y * cssHeight
+    );
+
+    ctx.stroke();
+
+    ctx.restore();
+}
+
+function startDrawing(event){
+
+    if(
+        !currentState ||
+        currentState.drawerId !== myId
+    ){
+        return;
+    }
+
+    drawing = true;
+
+    canvas.setPointerCapture(
+        event.pointerId
+    );
+
+    const point =
+        getPoint(event);
+
+    lastX =
+        point.x;
+
+    lastY =
+        point.y;
+
+    // Tiny dot for click.
+    drawLocalLine(
+        point.x,
+        point.y,
+        point.x,
+        point.y
+    );
+}
+
+function moveDrawing(event){
+
+    if(!drawing) return;
+
+    const point =
+        getPoint(event);
+
+    drawLocalLine(
+        point.x,
+        point.y,
+        lastX,
+        lastY
+    );
+
+    socket.emit(
+        "draw",
+        {
+            x:point.x,
+            y:point.y,
+            px:lastX,
+            py:lastY,
+            color:brushColor,
+            size:brushSize,
+            erase:erasing
+        }
+    );
+
+    lastX =
+        point.x;
+
+    lastY =
+        point.y;
+}
+
+function stopDrawing(){
+
+    drawing = false;
+}
+
+function drawRemote(data){
+
+    if(!ctx) return;
+
+    ctx.save();
+
+    if(data.erase){
+
+        ctx.globalCompositeOperation =
+            "destination-out";
+
+        ctx.strokeStyle =
+            "rgba(0,0,0,1)";
+
+    }else{
+
+        ctx.globalCompositeOperation =
+            "source-over";
+
+        ctx.strokeStyle =
+            data.color ||
+            "#111111";
+    }
+
+    ctx.lineWidth =
+        Math.max(
+            1,
+            Number(data.size) || 4
+        );
+
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        data.px * cssWidth,
+        data.py * cssHeight
+    );
+
+    ctx.lineTo(
+        data.x * cssWidth,
+        data.y * cssHeight
+    );
+
+    ctx.stroke();
+
+    ctx.restore();
+}
+
+function clearCanvas(){
+
+    if(!canvas || !ctx) return;
+
+    ctx.save();
+
+    ctx.setTransform(
+        pixelRatio,
+        0,
+        0,
+        pixelRatio,
+        0,
+        0
+    );
+
+    ctx.clearRect(
+        0,
+        0,
+        cssWidth,
+        cssHeight
+    );
+
+    ctx.restore();
+}
+
+// ======================================================
+// TOOLS
+// ======================================================
+
+document
+    .querySelectorAll(
+        ".tool[data-size]"
+    )
+    .forEach(button => {
+
+        button.onclick = () => {
+
+            brushSize =
+                Number(
+                    button.dataset.size
+                );
+
+            erasing = false;
+
+            document
+                .querySelectorAll(
+                    ".tool"
+                )
+                .forEach(
+                    x =>
+                        x.classList
+                            .remove("selected")
+                );
+
+            button.classList
+                .add("selected");
+        };
+    });
+
+$("eraser").onclick = () => {
+
+    erasing = true;
+
+    document
+        .querySelectorAll(
+            ".tool"
+        )
+        .forEach(
+            x =>
+                x.classList
+                    .remove("selected")
+        );
+
+    $("eraser")
+        .classList
+        .add("selected");
+};
+
+$("clear").onclick = () => {
+
+    if(
+        currentState &&
+        currentState.drawerId === myId
+    ){
+        clearCanvas();
+
+        socket.emit(
+            "clearBoard"
+        );
+    }
+};
+
+document
+    .querySelectorAll(
+        ".color"
+    )
+    .forEach(button => {
+
+        button.onclick = () => {
+
+            brushColor =
+                button.dataset.color;
+
+            erasing = false;
+
+            document
+                .querySelectorAll(
+                    ".tool"
+                )
+                .forEach(
+                    x =>
+                        x.classList
+                            .remove("selected")
+                );
+        };
+    });
+
+// ======================================================
+// CHAT
+// ======================================================
+
+function sendChat(){
+
+    const input =
+        $("chatInput");
+
+    const message =
+        input.value.trim();
+
+    if(!message) return;
+
+    socket.emit(
+        "chat",
+        { message }
+    );
+
+    input.value = "";
+}
+
+$("sendChat").onclick =
+    sendChat;
+
+$("chatInput").addEventListener(
+    "keydown",
+    event => {
+
+        if(
+            event.key === "Enter"
+        ){
+            sendChat();
+        }
+    }
+);
+
+// ======================================================
+// HOME BUTTONS
+// ======================================================
+
+function getName(){
+
+    const entered =
+        $("name")
+            .value
+            .trim();
+
+    if(entered){
+        myName =
+            entered.slice(0,18);
+    }
+
+    if(!myName){
+        myName = "Player";
+    }
+
+    return myName;
+}
+
+$("createRoom").onclick = () => {
+
+    socket.emit(
+        "createRoom",
+        {
+            name:getName()
+        }
+    );
+};
+
+$("quickJoin").onclick = () => {
+
+    socket.emit(
+        "quickJoin",
+        {
+            name:getName()
+        }
+    );
+};
+
+$("joinRoom").onclick = () => {
+
+    const code =
+        $("roomCode")
+            .value
+            .trim()
+            .toUpperCase();
+
+    if(code.length !== 5){
+
+        alert(
+            "Enter a valid 5-character room code."
+        );
+
+        return;
+    }
+
+    socket.emit(
+        "joinRoom",
+        {
+            code,
+            name:getName()
+        }
+    );
+};
+
+// ======================================================
+// RESULTS
+// ======================================================
+
+function renderResults(
+    leaderboard
+){
+
+    $("resultList").innerHTML =
+        leaderboard.map(
+            player => {
+
+                return `
+                    <div class="result-row">
+
+                        <div class="rank">
+                            #${player.position}
+                        </div>
+
+                        <div class="result-name">
+                            ${escapeHTML(player.name)}
+                        </div>
+
+                        <div class="result-score">
+                            ${player.score}
+                        </div>
+
+                    </div>
+                `;
+
+            }
+        ).join("");
+}
+
+$("closeModal").onclick = () => {
+
+    $("modal")
+        .classList
+        .remove("show");
+};
+
+// ======================================================
+// INITIALIZE
+// ======================================================
+
+initCanvas();
+
+window.addEventListener(
+    "orientationchange",
+    () => {
+
+        setTimeout(() => {
+            resizeCanvas(false);
+        }, 250);
+
+    }
+);
+
+window.addEventListener(
+    "keydown",
+    event => {
+
+        if(
+            ["ArrowUp","ArrowDown"," "]
+                .includes(event.key)
+        ){
+            event.preventDefault();
+        }
+
+    }
+);
+</script>
+
+</body>
+</html>
